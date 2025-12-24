@@ -1,0 +1,182 @@
+/* Dashboard Styles */
+.dashboard-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-info {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.logout-btn,
+.back-btn {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+  font-size: 14px;
+}
+
+.logout-btn:hover,
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.dashboard-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.welcome-section {
+  text-align: center;
+  margin-bottom: 50px;
+  color: #333;
+}
+
+.welcome-section h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.welcome-section p {
+  font-size: 18px;
+  color: #666;
+}
+
+.game-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-bottom: 50px;
+}
+
+.option-card {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.option-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.option-emoji {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+.option-card h3 {
+  color: #667eea;
+  font-size: 22px;
+  margin: 15px 0;
+}
+
+.option-card p {
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.option-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  font-size: 16px;
+  width: 100%;
+}
+
+.option-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.info-section {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+.info-section h3 {
+  color: #667eea;
+  font-size: 22px;
+  margin-top: 0;
+}
+
+.info-section p {
+  line-height: 1.8;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .nav-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .nav-right {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .welcome-section h2 {
+    font-size: 24px;
+  }
+
+  .game-options {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-content {
+    padding: 20px 10px;
+  }
+}

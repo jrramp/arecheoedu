@@ -1,0 +1,9 @@
+/* App styles - specific styling handled in component CSS files */
+
+#root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
