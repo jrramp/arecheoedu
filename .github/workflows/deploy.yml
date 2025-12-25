@@ -3,12 +3,17 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
+      - edu_deploy
       - main
-      - master
   pull_request:
     branches:
+      - edu_deploy
       - main
-      - master
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   deploy:
