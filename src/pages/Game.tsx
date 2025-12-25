@@ -191,7 +191,6 @@ const Game: React.FC = () => {
   const [currentLevel, setCurrentLevel] = useState<number>(0);
   const [matchedArtifact, setMatchedArtifact] = useState<ArtifactData | null>(null);
   const [showFacts, setShowFacts] = useState(false);
-  const [elapsedTime, setElapsedTime] = useState(0);
   const [selectedGame, setSelectedGame] = useState<'memory' | 'siteIntegrity' | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [answeredQuestions, setAnsweredQuestions] = useState<{ questionId: number; correct: boolean }[]>([]);
