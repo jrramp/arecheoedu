@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Relics Reimagined</title>
+    <script type="text/javascript">
+      // This file is used to redirect all 404s to index.html on GitHub Pages
+      // It allows client-side routing to work properly
+      var pathSegments = window.location.pathname.split('/').filter(Boolean);
+      var repo = pathSegments[0];
+      window.location.href = '/' + repo + '/?' + pathSegments.slice(1).join('/');
+    </script>
+  </head>
+  <body></body>
+</html>
