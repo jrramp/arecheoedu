@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { saveArtifactConfig } from '../utils/artifactGenerator';
-import { parsePPTX, parsePDF } from '../utils/pptxParser';
 import '../styles/Curriculum.css';
 
 interface Slide {
@@ -38,7 +36,6 @@ const Curriculum: React.FC = () => {
 
   const [selectedFile, setSelectedFile] = useState<CurriculumFile | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [fileInput, setFileInput] = useState<File | null>(null);
   const [googleSlidesName, setGoogleSlidesName] = useState<string>('');
   const [googleSlidesEmbedUrl, setGoogleSlidesEmbedUrl] = useState<string>('');
   const [googleSlidesPreQuiz, setGoogleSlidesPreQuiz] = useState<string>('');
@@ -48,55 +45,6 @@ const Curriculum: React.FC = () => {
   const [tempPreUrl, setTempPreUrl] = useState<string>('');
   const [tempPostUrl, setTempPostUrl] = useState<string>('');
   const [tempGoogleSlidesUrl, setTempGoogleSlidesUrl] = useState<string>('');
-  const [editingArtifactId, setEditingArtifactId] = useState<string | null>(null);
-  const [artifactTopic, setArtifactTopic] = useState<string>('');
-  const [artifactSubtopics, setArtifactSubtopics] = useState<string>('');
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFileInput(e.target.files[0]);
-    }
-  };
-
-  const handleUpload = () => {
-    if (!fileInput) return;
-
-    const fileExtension = fileInput.name.split('.').pop()?.toLowerCase();
-    
-    // Create new file entry
-    const newFile: CurriculumFile = {
-      id: Date.now().toString(),
-      name: fileInput.name.replace('.pptx', '').replace('.ppt', '').replace('.pdf', ''),
-      uploadedAt: new Date().toISOString().split('T')[0],
-      slides: [
-        { 
-          id: 1, 
-          title: 'Loading Content...', 
-          content: `File uploaded: ${fileInput.name}\n\nProcessing ${fileExtension?.toUpperCase()} file...` 
-        },
-      ]
-    };
-
-    setFiles([...files, newFile]);
-    setSelectedFile(newFile);
-    setCurrentSlide(0);
-    setFileInput(null);
-
-    // Parse the file
-    if (fileExtension === 'pdf') {
-      parsePDF(fileInput).then(slides => {
-        setFiles(prev => prev.map(f => 
-          f.id === newFile.id ? { ...f, slides: slides.length > 0 ? slides : f.slides } : f
-        ));
-      });
-    } else if (fileExtension === 'pptx' || fileExtension === 'ppt') {
-      parsePPTX(fileInput).then(slides => {
-        setFiles(prev => prev.map(f => 
-          f.id === newFile.id ? { ...f, slides: slides.length > 0 ? slides : f.slides } : f
-        ));
-      });
-    }
-  };
 
   const handleAddGoogleSlides = () => {
     if (!googleSlidesName.trim() || !googleSlidesEmbedUrl.trim()) {

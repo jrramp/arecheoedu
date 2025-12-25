@@ -1,4 +1,17 @@
-import type { ArtifactData } from '../pages/Game';
+export interface ArtifactData {
+  id: number;
+  name: string;
+  emoji: string;
+  rarity: 'common' | 'uncommon' | 'rare' | 'legendary';
+  basePoints: number;
+  facts: {
+    origin: string;
+    siteImpact: string;
+    culturalSignificance: string;
+    historicalPeriod: string;
+    additionalFact: string;
+  };
+}
 
 export interface ArtifactGeneratorConfig {
   topic: string;
