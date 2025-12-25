@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { saveArtifactConfig } from '../utils/artifactGenerator';
+import { parsePPTX, parsePDF } from '../utils/pptxParser';
 import '../styles/Curriculum.css';
 
 interface Slide {
@@ -17,6 +18,7 @@ interface CurriculumFile {
   slides: Slide[];
   preQuizUrl?: string;
   postQuizUrl?: string;
+  googleSlidesUrl?: string;
   topic?: string;
   subtopics?: string[];
 }
@@ -25,51 +27,27 @@ interface QuizLinks {
   [fileId: string]: {
     preQuizUrl: string;
     postQuizUrl: string;
+    googleSlidesUrl: string;
   };
 }
 
 const Curriculum: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [files, setFiles] = useState<CurriculumFile[]>([
-    {
-      id: '1',
-      name: 'Introduction to Archaeology',
-      uploadedAt: '2025-12-20',
-      slides: [
-        { id: 1, title: 'What is Archaeology?', content: 'Archaeology is the study of past human societies and cultures through physical remains and artifacts.' },
-        { id: 2, title: 'Key Concepts', content: 'Understanding stratigraphy, dating methods, and artifact analysis are fundamental to archaeology.' },
-        { id: 3, title: 'Famous Archaeologists', content: 'Learn about the pioneers who shaped modern archaeology and their discoveries.' },
-      ]
-    },
-    {
-      id: '2',
-      name: 'Archaeological Excavation Techniques',
-      uploadedAt: '2025-12-18',
-      slides: [
-        { id: 1, title: 'Excavation Methods', content: 'There are several methods used in archaeology including stratigraphic excavation and grid systems.' },
-        { id: 2, title: 'Documentation', content: 'Proper documentation and photography are crucial for recording findings.' },
-        { id: 3, title: 'Safety Protocols', content: 'Safety is paramount in all archaeological fieldwork.' },
-      ]
-    }
-  ]);
+  const [files, setFiles] = useState<CurriculumFile[]>([]);
 
   const [selectedFile, setSelectedFile] = useState<CurriculumFile | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [fileInput, setFileInput] = useState<File | null>(null);
-  const [quizLinks, setQuizLinks] = useState<QuizLinks>({
-    '1': {
-      preQuizUrl: 'https://forms.gle/example-pre-quiz-1',
-      postQuizUrl: 'https://forms.gle/example-post-quiz-1'
-    },
-    '2': {
-      preQuizUrl: 'https://forms.gle/example-pre-quiz-2',
-      postQuizUrl: 'https://forms.gle/example-post-quiz-2'
-    }
-  });
+  const [googleSlidesName, setGoogleSlidesName] = useState<string>('');
+  const [googleSlidesEmbedUrl, setGoogleSlidesEmbedUrl] = useState<string>('');
+  const [googleSlidesPreQuiz, setGoogleSlidesPreQuiz] = useState<string>('');
+  const [googleSlidesPostQuiz, setGoogleSlidesPostQuiz] = useState<string>('');
+  const [quizLinks, setQuizLinks] = useState<QuizLinks>({});
   const [editingQuizId, setEditingQuizId] = useState<string | null>(null);
   const [tempPreUrl, setTempPreUrl] = useState<string>('');
   const [tempPostUrl, setTempPostUrl] = useState<string>('');
+  const [tempGoogleSlidesUrl, setTempGoogleSlidesUrl] = useState<string>('');
   const [editingArtifactId, setEditingArtifactId] = useState<string | null>(null);
   const [artifactTopic, setArtifactTopic] = useState<string>('');
   const [artifactSubtopics, setArtifactSubtopics] = useState<string>('');
@@ -83,22 +61,90 @@ const Curriculum: React.FC = () => {
   const handleUpload = () => {
     if (!fileInput) return;
 
-    // Demo: Create slides from file name
+    const fileExtension = fileInput.name.split('.').pop()?.toLowerCase();
+    
+    // Create new file entry
     const newFile: CurriculumFile = {
       id: Date.now().toString(),
-      name: fileInput.name.replace('.pptx', '').replace('.ppt', ''),
+      name: fileInput.name.replace('.pptx', '').replace('.ppt', '').replace('.pdf', ''),
       uploadedAt: new Date().toISOString().split('T')[0],
       slides: [
-        { id: 1, title: 'Slide 1', content: `Content from ${fileInput.name}` },
-        { id: 2, title: 'Slide 2', content: 'Additional content' },
-        { id: 3, title: 'Slide 3', content: 'More information' },
+        { 
+          id: 1, 
+          title: 'Loading Content...', 
+          content: `File uploaded: ${fileInput.name}\n\nProcessing ${fileExtension?.toUpperCase()} file...` 
+        },
       ]
     };
 
     setFiles([...files, newFile]);
-    setFileInput(null);
     setSelectedFile(newFile);
     setCurrentSlide(0);
+    setFileInput(null);
+
+    // Parse the file
+    if (fileExtension === 'pdf') {
+      parsePDF(fileInput).then(slides => {
+        setFiles(prev => prev.map(f => 
+          f.id === newFile.id ? { ...f, slides: slides.length > 0 ? slides : f.slides } : f
+        ));
+      });
+    } else if (fileExtension === 'pptx' || fileExtension === 'ppt') {
+      parsePPTX(fileInput).then(slides => {
+        setFiles(prev => prev.map(f => 
+          f.id === newFile.id ? { ...f, slides: slides.length > 0 ? slides : f.slides } : f
+        ));
+      });
+    }
+  };
+
+  const handleAddGoogleSlides = () => {
+    if (!googleSlidesName.trim() || !googleSlidesEmbedUrl.trim()) {
+      alert('Please enter both a presentation name and Google Slides URL');
+      return;
+    }
+
+    // Extract presentation ID from various Google Slides URL formats
+    let embedUrl = googleSlidesEmbedUrl;
+    
+    // Match presentation ID from edit, view, or preview URLs
+    const idMatch = googleSlidesEmbedUrl.match(/\/presentation\/d\/([a-zA-Z0-9-_]+)/);
+    if (idMatch && idMatch[1]) {
+      const presentationId = idMatch[1];
+      embedUrl = `https://docs.google.com/presentation/d/${presentationId}/embed?start=false&loop=false&delayms=3000`;
+    }
+
+    // Create new presentation entry with Google Slides
+    const newPresentation: CurriculumFile = {
+      id: Date.now().toString(),
+      name: googleSlidesName,
+      uploadedAt: new Date().toISOString().split('T')[0],
+      slides: [
+        { 
+          id: 1, 
+          title: googleSlidesName, 
+          content: 'Google Slides presentation - view the embedded presentation above' 
+        },
+      ]
+    };
+
+    // Add the Google Slides URL and quiz URLs to quiz links
+    setQuizLinks({
+      ...quizLinks,
+      [newPresentation.id]: {
+        preQuizUrl: googleSlidesPreQuiz,
+        postQuizUrl: googleSlidesPostQuiz,
+        googleSlidesUrl: embedUrl
+      }
+    });
+
+    setFiles([...files, newPresentation]);
+    setSelectedFile(newPresentation);
+    setCurrentSlide(0);
+    setGoogleSlidesName('');
+    setGoogleSlidesEmbedUrl('');
+    setGoogleSlidesPreQuiz('');
+    setGoogleSlidesPostQuiz('');
   };
 
   const nextSlide = () => {
@@ -122,9 +168,10 @@ const Curriculum: React.FC = () => {
   };
 
   const startEditingQuiz = (fileId: string) => {
-    const current = quizLinks[fileId] || { preQuizUrl: '', postQuizUrl: '' };
+    const current = quizLinks[fileId] || { preQuizUrl: '', postQuizUrl: '', googleSlidesUrl: '' };
     setTempPreUrl(current.preQuizUrl);
     setTempPostUrl(current.postQuizUrl);
+    setTempGoogleSlidesUrl(current.googleSlidesUrl);
     setEditingQuizId(fileId);
   };
 
@@ -133,7 +180,8 @@ const Curriculum: React.FC = () => {
       ...quizLinks,
       [fileId]: {
         preQuizUrl: tempPreUrl,
-        postQuizUrl: tempPostUrl
+        postQuizUrl: tempPostUrl,
+        googleSlidesUrl: tempGoogleSlidesUrl
       }
     });
     setEditingQuizId(null);
@@ -162,26 +210,47 @@ const Curriculum: React.FC = () => {
         <div className="curriculum-layout">
           {/* Left Panel: File List */}
           <div className="files-panel">
-            <div className="upload-section">
-              <h3>📤 Upload Presentation</h3>
+            <div className="upload-section google-slides-section">
+              <h3>🎬 Add Google Slides</h3>
               <div className="upload-box">
                 <input
-                  type="file"
-                  accept=".pptx,.ppt,.pdf"
-                  onChange={handleFileSelect}
-                  id="file-input"
-                  style={{ display: 'none' }}
+                  type="text"
+                  placeholder="Enter presentation name"
+                  value={googleSlidesName}
+                  onChange={(e) => setGoogleSlidesName(e.target.value)}
+                  className="text-input"
                 />
-                <label htmlFor="file-input" className="file-label">
-                  {fileInput ? fileInput.name : 'Click to select file'}
-                </label>
+                <input
+                  type="url"
+                  placeholder="Paste Google Slides URL (any format)"
+                  value={googleSlidesEmbedUrl}
+                  onChange={(e) => setGoogleSlidesEmbedUrl(e.target.value)}
+                  className="text-input"
+                />
+                <input
+                  type="url"
+                  placeholder="Pre-Quiz Google Form URL (optional)"
+                  value={googleSlidesPreQuiz}
+                  onChange={(e) => setGoogleSlidesPreQuiz(e.target.value)}
+                  className="text-input"
+                />
+                <input
+                  type="url"
+                  placeholder="Post-Quiz Google Form URL (optional)"
+                  value={googleSlidesPostQuiz}
+                  onChange={(e) => setGoogleSlidesPostQuiz(e.target.value)}
+                  className="text-input"
+                />
                 <button 
-                  className="upload-btn"
-                  onClick={handleUpload}
-                  disabled={!fileInput}
+                  className="upload-btn google-slides-btn"
+                  onClick={handleAddGoogleSlides}
+                  disabled={!googleSlidesName.trim() || !googleSlidesEmbedUrl.trim()}
                 >
-                  📤 Upload
+                  ➕ Add Presentation
                 </button>
+                <div className="file-note">
+                  <strong>How to use:</strong> Copy the link from Share button (edit/view URL works) - we automatically convert it for embedding
+                </div>
               </div>
             </div>
 
@@ -225,49 +294,73 @@ const Curriculum: React.FC = () => {
                 <div className="slide-viewer">
                   <h3 className="presentation-title">📊 {selectedFile.name}</h3>
                   
-                  <div className="slide-content">
-                    <div className="slide">
-                      <div className="slide-title">
-                        {selectedFile.slides[currentSlide].title}
-                      </div>
-                      <div className="slide-body">
-                        {selectedFile.slides[currentSlide].content}
+                  {/* Google Slides Embed Display */}
+                  {getQuizLinks(selectedFile.id).googleSlidesUrl && (
+                    <div className="google-slides-main-container">
+                      <iframe
+                        src={getQuizLinks(selectedFile.id).googleSlidesUrl}
+                        width="100%"
+                        height="600"
+                        frameBorder="0"
+                        allow="fullscreen; autoplay; presentation"
+                        allowFullScreen
+                        sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox allow-presentation"
+                        title="Google Slides Presentation"
+                      ></iframe>
+                    </div>
+                  )}
+
+                  {/* Fallback Slide Display (for non-Google Slides presentations) */}
+                  {!getQuizLinks(selectedFile.id).googleSlidesUrl && (
+                    <div className="slide-content">
+                      <div className="slide">
+                        <div className="slide-title">
+                          {selectedFile.slides[currentSlide].title}
+                        </div>
+                        <div className="slide-body">
+                          {selectedFile.slides[currentSlide].content}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
 
-                  <div className="slide-controls">
-                    <button
-                      className="nav-btn"
-                      onClick={prevSlide}
-                      disabled={currentSlide === 0}
-                    >
-                      ← Previous
-                    </button>
-                    <div className="slide-counter">
-                      Slide {currentSlide + 1} of {selectedFile.slides.length}
-                    </div>
-                    <button
-                      className="nav-btn"
-                      onClick={nextSlide}
-                      disabled={currentSlide === selectedFile.slides.length - 1}
-                    >
-                      Next →
-                    </button>
-                  </div>
-
-                  <div className="slide-thumbnails">
-                    {selectedFile.slides.map((slide, index) => (
-                      <div
-                        key={slide.id}
-                        className={`thumbnail ${index === currentSlide ? 'active' : ''}`}
-                        onClick={() => setCurrentSlide(index)}
-                      >
-                        <div className="thumb-number">{index + 1}</div>
-                        <div className="thumb-title">{slide.title}</div>
+                  {/* Slide Controls (only show if not Google Slides) */}
+                  {!getQuizLinks(selectedFile.id).googleSlidesUrl && (
+                    <>
+                      <div className="slide-controls">
+                        <button
+                          className="nav-btn"
+                          onClick={prevSlide}
+                          disabled={currentSlide === 0}
+                        >
+                          ← Previous
+                        </button>
+                        <div className="slide-counter">
+                          Slide {currentSlide + 1} of {selectedFile.slides.length}
+                        </div>
+                        <button
+                          className="nav-btn"
+                          onClick={nextSlide}
+                          disabled={currentSlide === selectedFile.slides.length - 1}
+                        >
+                          Next →
+                        </button>
                       </div>
-                    ))}
-                  </div>
+
+                      <div className="slide-thumbnails">
+                        {selectedFile.slides.map((slide, index) => (
+                          <div
+                            key={slide.id}
+                            className={`thumbnail ${index === currentSlide ? 'active' : ''}`}
+                            onClick={() => setCurrentSlide(index)}
+                          >
+                            <div className="thumb-number">{index + 1}</div>
+                            <div className="thumb-title">{slide.title}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
 
                   {/* Quiz Section */}
                   <div className="quiz-section">
@@ -293,6 +386,17 @@ const Curriculum: React.FC = () => {
                             onChange={(e) => setTempPostUrl(e.target.value)}
                             className="quiz-input"
                           />
+                        </div>
+                        <div className="quiz-input-group">
+                          <label>Google Slides Embed URL:</label>
+                          <input
+                            type="url"
+                            placeholder="https://docs.google.com/presentation/d/YOUR_PRESENTATION_ID/embed"
+                            value={tempGoogleSlidesUrl}
+                            onChange={(e) => setTempGoogleSlidesUrl(e.target.value)}
+                            className="quiz-input"
+                          />
+                          <small className="input-hint">Copy the embed link from Google Slides (Share → Embed)</small>
                         </div>
                         <div className="quiz-edit-buttons">
                           <button className="save-quiz-btn" onClick={() => saveQuizLinks(selectedFile.id)}>
@@ -332,7 +436,7 @@ const Curriculum: React.FC = () => {
                           )}
                         </div>
                         <button className="edit-quiz-btn" onClick={() => startEditingQuiz(selectedFile.id)}>
-                          ✎ Edit Quiz Links
+                          ✎ Edit Links
                         </button>
                       </div>
                     )}
@@ -341,11 +445,11 @@ const Curriculum: React.FC = () => {
               </>
             ) : (
               <div className="empty-state">
-                <div className="empty-icon">📊</div>
-                <h3>No Presentation Selected</h3>
-                <p>Choose a presentation from the list to view its slides</p>
+                <div className="empty-icon">📚</div>
+                <h3>No Presentation Added Yet</h3>
+                <p>Add a Google Slides presentation from the left panel to get started</p>
                 <p style={{ fontSize: '12px', marginTop: '10px', color: '#999' }}>
-                  💡 Tip: You can upload PowerPoint (.pptx, .ppt) or PDF files
+                  💡 Tip: Enter the presentation name and Google Slides embed URL to add it to your curriculum
                 </p>
               </div>
             )}
