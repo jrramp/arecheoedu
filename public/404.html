@@ -6,10 +6,34 @@
     <script type="text/javascript">
       // This file is used to redirect all 404s to index.html on GitHub Pages
       // It allows client-side routing to work properly
-      var pathSegments = window.location.pathname.split('/').filter(Boolean);
-      var repo = pathSegments[0];
-      window.location.href = '/' + repo + '/?' + pathSegments.slice(1).join('/');
+      (function() {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, null, redirect);
+        }
+      })();
     </script>
   </head>
-  <body></body>
+  <body>
+    <script type="text/javascript">
+      // Redirect to index.html with the requested path as a query parameter
+      var uri = window.location.pathname;
+      
+      // Handle GitHub Pages subdirectory (arecheoedu)
+      if (uri !== '/arecheoedu/' && uri !== '/arecheoedu' && !uri.includes('/arecheoedu/')) {
+        var isRoot = window.location.pathname === '/';
+        if (!isRoot) {
+          sessionStorage.redirect = uri;
+          window.location.href = '/arecheoedu/#' + uri.replace(/^\/?arecheoedu\/?/, '');
+        }
+      } else {
+        var pathAfterRepo = uri.replace(/^\/arecheoedu\/?/, '');
+        if (pathAfterRepo && pathAfterRepo !== '') {
+          sessionStorage.redirect = uri;
+          window.location.href = '/arecheoedu/#' + pathAfterRepo;
+        }
+      }
+    </script>
+  </body>
 </html>
