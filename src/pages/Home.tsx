@@ -21,7 +21,7 @@ const Home: React.FC = () => {
                 <button className="nav-btn primary" onClick={() => navigate('/register')}>Register</button>
               </>
             )}
-            <a href="/admin/setup" className="nav-btn" style={{textDecoration: 'none'}}>Setup</a>
+            <button className="nav-btn" onClick={() => navigate('/admin/setup')}>Setup</button>
           </div>
         </div>
       </nav>

@@ -4,36 +4,26 @@
     <meta charset="utf-8" />
     <title>Relics Reimagined</title>
     <script type="text/javascript">
-      // This file is used to redirect all 404s to index.html on GitHub Pages
-      // It allows client-side routing to work properly
-      (function() {
-        var redirect = sessionStorage.redirect;
-        delete sessionStorage.redirect;
-        if (redirect && redirect !== location.href) {
-          history.replaceState(null, null, redirect);
-        }
-      })();
-    </script>
-  </head>
-  <body>
-    <script type="text/javascript">
-      // Redirect to index.html with the requested path as a query parameter
-      var uri = window.location.pathname;
+      // Redirect 404s to index.html on GitHub Pages with hash routing
+      var pathname = window.location.pathname;
+      var search = window.location.search;
       
-      // Handle GitHub Pages subdirectory (arecheoedu)
-      if (uri !== '/arecheoedu/' && uri !== '/arecheoedu' && !uri.includes('/arecheoedu/')) {
-        var isRoot = window.location.pathname === '/';
-        if (!isRoot) {
-          sessionStorage.redirect = uri;
-          window.location.href = '/arecheoedu/#' + uri.replace(/^\/?arecheoedu\/?/, '');
-        }
+      // Remove /arecheoedu prefix to get the route
+      var route = pathname.replace(/^\/arecheoedu\/?/, '') || '';
+      
+      // Don't redirect static assets or index.html
+      if (pathname.match(/\.(html|css|js|json|png|jpg|gif|svg|ico|woff|woff2|ttf)$/) ||
+          pathname.endsWith('index.html') ||
+          pathname === '/arecheoedu/' ||
+          pathname === '/arecheoedu' ||
+          route === '' ||
+          pathname.includes('/assets/')) {
+        // Let the server handle static files
       } else {
-        var pathAfterRepo = uri.replace(/^\/arecheoedu\/?/, '');
-        if (pathAfterRepo && pathAfterRepo !== '') {
-          sessionStorage.redirect = uri;
-          window.location.href = '/arecheoedu/#' + pathAfterRepo;
-        }
+        // Redirect to index.html with hash routing
+        window.location.href = '/arecheoedu/#/' + route + search;
       }
     </script>
-  </body>
+  </head>
+  <body></body>
 </html>

@@ -1615,6 +1615,194 @@
   font-weight: 600;
 }
 
+/* Progress Bar */
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+  transition: width 0.4s ease;
+  border-radius: 10px;
+}
+
+/* Streak Bonus */
+.streak-bonus {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #ffc107;
+  font-weight: 700;
+  animation: pulse 0.6s ease;
+}
+
+/* Speed Bonus */
+.speed-bonus {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #17a2b8;
+  font-weight: 700;
+  animation: pulse 0.6s ease;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Excavation Game */
+.excavation-game {
+  width: 100%;
+}
+
+.excavation-grid {
+  display: grid;
+  gap: 12px;
+  margin: 30px 0;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.excavation-square {
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, #8B7355 0%, #A0826D 100%);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 32px;
+  font-weight: bold;
+  color: #fff;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.excavation-square:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #9B8D75 0%, #B0968D 100%);
+}
+
+.excavation-square:disabled {
+  cursor: not-allowed;
+  background: linear-gradient(135deg, #d4af37 0%, #e5c158 100%);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.excavation-square.excavated {
+  opacity: 0.8;
+  color: #28a745;
+}
+
+/* Challenge Modal */
+.challenge-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.challenge-content {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+}
+
+.challenge-text {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e3c72;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.challenge-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.decision-btn {
+  flex: 1;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 180px;
+}
+
+.decision-btn.careful {
+  background: #ffc107;
+  color: #333;
+}
+
+.decision-btn.careful:hover {
+  background: #ffb300;
+  transform: scale(1.05);
+}
+
+.decision-btn.quick {
+  background: #17a2b8;
+  color: white;
+}
+
+.decision-btn.quick:hover {
+  background: #138496;
+  transform: scale(1.05);
+}
+
+.challenge-result {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  font-weight: 600;
+  animation: slideDown 0.4s ease;
+}
+
+.result-good {
+  background: #d4edda;
+  color: #155724;
+  border-left: 4px solid #28a745;
+}
+
+.result-bad {
+  background: #f8d7da;
+  color: #721c24;
+  border-left: 4px solid #dc3545;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .game-content {
@@ -1677,5 +1865,149 @@
   .completion-screen {
     margin: 20px auto;
     padding: 20px;
+  }
+}
+
+/* Excavation Game */
+.excavation-game {
+  width: 100%;
+}
+
+.excavation-grid {
+  display: grid;
+  gap: 12px;
+  margin: 30px 0;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.excavation-square {
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, #8B7355 0%, #A0826D 100%);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 32px;
+  font-weight: bold;
+  color: #fff;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.excavation-square:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #9B8D75 0%, #B0968D 100%);
+}
+
+.excavation-square:disabled {
+  cursor: not-allowed;
+  background: linear-gradient(135deg, #d4af37 0%, #e5c158 100%);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.excavation-square.excavated {
+  opacity: 0.8;
+  color: #28a745;
+}
+
+/* Challenge Modal */
+.challenge-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.challenge-content {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+}
+
+.challenge-text {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e3c72;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.challenge-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.decision-btn {
+  flex: 1;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 180px;
+}
+
+.decision-btn.careful {
+  background: #ffc107;
+  color: #333;
+}
+
+.decision-btn.careful:hover {
+  background: #ffb300;
+  transform: scale(1.05);
+}
+
+.decision-btn.quick {
+  background: #17a2b8;
+  color: white;
+}
+
+.decision-btn.quick:hover {
+  background: #138496;
+  transform: scale(1.05);
+}
+
+.challenge-result {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  font-weight: 600;
+  animation: slideDown 0.4s ease;
+}
+
+.result-good {
+  background: #d4edda;
+  color: #155724;
+  border-left: 4px solid #28a745;
+}
+
+.result-bad {
+  background: #f8d7da;
+  color: #721c24;
+  border-left: 4px solid #dc3545;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
