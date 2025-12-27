@@ -11,7 +11,7 @@ const Home: React.FC = () => {
     <div className="home-container">
       <nav className="navbar">
         <div className="nav-content">
-          <h1>🏛️ Relics Reimagined</h1>
+          <h1 style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>🏛️ Relics Reimagined</h1>
           <div className="nav-right">
             {user ? (
               <button className="nav-btn" onClick={() => navigate('/dashboard')}>Dashboard</button>

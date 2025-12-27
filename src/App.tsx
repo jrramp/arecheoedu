@@ -11,6 +11,7 @@ import About from './pages/About';
 import AdminSetup from './pages/AdminSetup';
 import Curriculum from './pages/Curriculum';
 import './App.css';
+import './styles/Education.css';
 
 function App() {
   return (

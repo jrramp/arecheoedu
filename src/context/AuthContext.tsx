@@ -1,21 +1,59 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 
-// DEVELOPMENT MODE: Using mock authentication for testing without Firebase
-// All authentication is simulated in-memory for demo purposes
+// LOCAL FILE-BASED DATABASE: Using localStorage as persistent user database
+// All user registration data is stored in localStorage instead of Firebase
 
-// Mock user interface
+// Storage key for user database
+const USER_DATABASE_KEY = 'arecheoedu_user_database';
+
+// User registration data structure
+interface UserRegistration {
+  email: string;
+  password: string;
+  displayName: string;
+  role: 'admin' | 'customer';
+  createdAt: string;
+}
+
+// Mock user interface (for logged-in user session)
 interface MockUser {
   uid: string;
   email: string;
   displayName: string | null;
+  role: 'admin' | 'customer';
 }
 
-// Store for mock authentication
-let mockCurrentUser: MockUser | null = null;
-const mockUsers: { [email: string]: { email: string; password: string; displayName: string } } = {
-  'cyber@example.com': { email: 'cyber@example.com', password: 'turtle2025', displayName: 'Cyber Archaeologist' },
+// Initialize user database from localStorage
+const initializeUserDatabase = () => {
+  try {
+    const existing = localStorage.getItem(USER_DATABASE_KEY);
+    if (existing) {
+      return JSON.parse(existing);
+    }
+  } catch (error) {
+    console.error('Error loading user database:', error);
+  }
+
+  // Default database with test admin user
+  const defaultDatabase: { [email: string]: UserRegistration } = {
+    'cyber@example.com': {
+      email: 'cyber@example.com',
+      password: 'turtle2025',
+      displayName: 'Cyber Archaeologist',
+      role: 'admin',
+      createdAt: new Date().toISOString()
+    }
+  };
+
+  // Save default database to localStorage
+  localStorage.setItem(USER_DATABASE_KEY, JSON.stringify(defaultDatabase));
+  return defaultDatabase;
 };
+
+// In-memory cache of user database
+let mockUsers = initializeUserDatabase();
+let mockCurrentUser: MockUser | null = null;
 
 export interface LeaderboardEntry {
   name: string;
@@ -35,17 +73,33 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Mock authentication functions
-const mockSignUp = (email: string, password: string, displayName: string): Promise<MockUser> => {
+const mockSignUp = (email: string, password: string, displayName: string, role: 'admin' | 'customer' = 'customer'): Promise<MockUser> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (mockUsers[email]) {
         reject(new Error('auth/email-already-in-use'));
       } else {
-        mockUsers[email] = { email, password, displayName: displayName || 'Player' };
+        // Create new user registration
+        const newUserReg: UserRegistration = {
+          email,
+          password,
+          displayName: displayName || 'Player',
+          role,
+          createdAt: new Date().toISOString()
+        };
+
+        // Add to in-memory database
+        mockUsers[email] = newUserReg;
+
+        // Save to localStorage (file-based database)
+        localStorage.setItem(USER_DATABASE_KEY, JSON.stringify(mockUsers));
+
+        // Create session user
         const user: MockUser = {
           uid: Math.random().toString(36).substr(2, 9),
           email,
-          displayName: displayName || 'Player'
+          displayName: displayName || 'Player',
+          role
         };
         mockCurrentUser = user;
         resolve(user);
@@ -57,16 +111,18 @@ const mockSignUp = (email: string, password: string, displayName: string): Promi
 const mockSignIn = (email: string, password: string): Promise<MockUser> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const user = mockUsers[email];
-      if (!user) {
+      const userReg = mockUsers[email] as UserRegistration | undefined;
+      if (!userReg) {
         reject(new Error('auth/user-not-found'));
-      } else if (user.password !== password) {
+      } else if (userReg.password !== password) {
         reject(new Error('auth/wrong-password'));
       } else {
+        // Create session user
         const mockUser: MockUser = {
           uid: Math.random().toString(36).substr(2, 9),
           email,
-          displayName: user.displayName
+          displayName: userReg.displayName,
+          role: userReg.role
         };
         mockCurrentUser = mockUser;
         resolve(mockUser);

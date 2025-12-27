@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Curriculum.css';
@@ -29,10 +29,92 @@ interface QuizLinks {
   };
 }
 
+// Global database storage keys (shared across all users)
+// NOTE: Data is now stored on server-side instead of localStorage
+const API_BASE_URL = 'http://localhost:3001/api';
+
 const Curriculum: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [files, setFiles] = useState<CurriculumFile[]>([]);
+  const [quizLinks, setQuizLinks] = useState<QuizLinks>({});
+  const [editingQuizId, setEditingQuizId] = useState<string | null>(null);
+  const [tempPreUrl, setTempPreUrl] = useState<string>('');
+  const [tempPostUrl, setTempPostUrl] = useState<string>('');
+  const [tempGoogleSlidesUrl, setTempGoogleSlidesUrl] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+
+  // Function to load presentations from server
+  const loadPresentations = async () => {
+    try {
+      setLoading(true);
+      const [presentationsRes, quizzesRes] = await Promise.all([
+        fetch(`${API_BASE_URL}/presentations`),
+        fetch(`${API_BASE_URL}/quizzes`)
+      ]);
+
+      if (presentationsRes.ok) {
+        const presentations = await presentationsRes.json();
+        setFiles(presentations);
+      }
+
+      if (quizzesRes.ok) {
+        const quizzes = await quizzesRes.json();
+        setQuizLinks(quizzes);
+      }
+    } catch (error) {
+      console.error('Error loading presentations:', error);
+      setFiles([]);
+      setQuizLinks({});
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load presentations on component mount and when user changes
+  useEffect(() => {
+    loadPresentations();
+  }, [user?.uid]);
+
+  // Save presentations to server whenever files change
+  useEffect(() => {
+    if (files.length === 0) return;
+    
+    const saveToServer = async () => {
+      try {
+        await fetch(`${API_BASE_URL}/presentations`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(files)
+        });
+      } catch (error) {
+        console.error('Error saving presentations to server:', error);
+      }
+    };
+
+    const timer = setTimeout(saveToServer, 500); // Debounce saves
+    return () => clearTimeout(timer);
+  }, [files]);
+
+  // Save quiz links to server whenever they change
+  useEffect(() => {
+    if (Object.keys(quizLinks).length === 0) return;
+
+    const saveToServer = async () => {
+      try {
+        await fetch(`${API_BASE_URL}/quizzes`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(quizLinks)
+        });
+      } catch (error) {
+        console.error('Error saving quizzes to server:', error);
+      }
+    };
+
+    const timer = setTimeout(saveToServer, 500); // Debounce saves
+    return () => clearTimeout(timer);
+  }, [quizLinks]);
 
   const [selectedFile, setSelectedFile] = useState<CurriculumFile | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -40,11 +122,6 @@ const Curriculum: React.FC = () => {
   const [googleSlidesEmbedUrl, setGoogleSlidesEmbedUrl] = useState<string>('');
   const [googleSlidesPreQuiz, setGoogleSlidesPreQuiz] = useState<string>('');
   const [googleSlidesPostQuiz, setGoogleSlidesPostQuiz] = useState<string>('');
-  const [quizLinks, setQuizLinks] = useState<QuizLinks>({});
-  const [editingQuizId, setEditingQuizId] = useState<string | null>(null);
-  const [tempPreUrl, setTempPreUrl] = useState<string>('');
-  const [tempPostUrl, setTempPostUrl] = useState<string>('');
-  const [tempGoogleSlidesUrl, setTempGoogleSlidesUrl] = useState<string>('');
 
   const handleAddGoogleSlides = () => {
     if (!googleSlidesName.trim() || !googleSlidesEmbedUrl.trim()) {
@@ -107,11 +184,16 @@ const Curriculum: React.FC = () => {
     }
   };
 
-  const deleteFile = (id: string) => {
-    setFiles(files.filter(f => f.id !== id));
-    if (selectedFile?.id === id) {
-      setSelectedFile(null);
-      setCurrentSlide(0);
+  const deleteFile = async (id: string) => {
+    try {
+      await fetch(`${API_BASE_URL}/presentations/${id}`, { method: 'DELETE' });
+      setFiles(files.filter(f => f.id !== id));
+      if (selectedFile?.id === id) {
+        setSelectedFile(null);
+        setCurrentSlide(0);
+      }
+    } catch (error) {
+      console.error('Error deleting presentation:', error);
     }
   };
 
@@ -143,9 +225,9 @@ const Curriculum: React.FC = () => {
     <div className="curriculum-container">
       <nav className="navbar">
         <div className="nav-content">
-          <h1>🏛️ Relics Reimagined</h1>
+          <h1 style={{ cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>🏛️ Relics Reimagined</h1>
           <div className="nav-right">
-            <span className="user-info">Welcome, {user?.displayName || 'Explorer'}!</span>
+            <span className="user-info">Welcome, {user?.displayName || 'Explorer'}! <span style={{ fontSize: '12px', color: '#ddd' }}>({user?.role === 'admin' ? '👨‍💼 Admin' : '👤 Customer'})</span></span>
             <button className="back-btn" onClick={() => navigate('/dashboard')}>← Back</button>
           </div>
         </div>
@@ -155,52 +237,56 @@ const Curriculum: React.FC = () => {
         <h2>📚 Curriculum & Learning Materials</h2>
         <p className="subtitle">Upload and view PowerPoint presentations about archaeology</p>
 
+        {loading && <div style={{ textAlign: 'center', padding: '20px', color: '#667eea' }}>⏳ Loading presentations...</div>}
+
         <div className="curriculum-layout">
           {/* Left Panel: File List */}
           <div className="files-panel">
-            <div className="upload-section google-slides-section">
-              <h3>🎬 Add Google Slides</h3>
-              <div className="upload-box">
-                <input
-                  type="text"
-                  placeholder="Enter presentation name"
-                  value={googleSlidesName}
-                  onChange={(e) => setGoogleSlidesName(e.target.value)}
-                  className="text-input"
-                />
-                <input
-                  type="url"
-                  placeholder="Paste Google Slides URL (any format)"
-                  value={googleSlidesEmbedUrl}
-                  onChange={(e) => setGoogleSlidesEmbedUrl(e.target.value)}
-                  className="text-input"
-                />
-                <input
-                  type="url"
-                  placeholder="Pre-Quiz Google Form URL (optional)"
-                  value={googleSlidesPreQuiz}
-                  onChange={(e) => setGoogleSlidesPreQuiz(e.target.value)}
-                  className="text-input"
-                />
-                <input
-                  type="url"
-                  placeholder="Post-Quiz Google Form URL (optional)"
-                  value={googleSlidesPostQuiz}
-                  onChange={(e) => setGoogleSlidesPostQuiz(e.target.value)}
-                  className="text-input"
-                />
-                <button 
-                  className="upload-btn google-slides-btn"
-                  onClick={handleAddGoogleSlides}
-                  disabled={!googleSlidesName.trim() || !googleSlidesEmbedUrl.trim()}
-                >
-                  ➕ Add Presentation
-                </button>
-                <div className="file-note">
-                  <strong>How to use:</strong> Copy the link from Share button (edit/view URL works) - we automatically convert it for embedding
+            {user?.role === 'admin' && (
+              <div className="upload-section google-slides-section">
+                <h3>🎬 Add Google Slides</h3>
+                <div className="upload-box">
+                  <input
+                    type="text"
+                    placeholder="Enter presentation name"
+                    value={googleSlidesName}
+                    onChange={(e) => setGoogleSlidesName(e.target.value)}
+                    className="text-input"
+                  />
+                  <input
+                    type="url"
+                    placeholder="Paste Google Slides URL (any format)"
+                    value={googleSlidesEmbedUrl}
+                    onChange={(e) => setGoogleSlidesEmbedUrl(e.target.value)}
+                    className="text-input"
+                  />
+                  <input
+                    type="url"
+                    placeholder="Pre-Quiz Google Form URL (optional)"
+                    value={googleSlidesPreQuiz}
+                    onChange={(e) => setGoogleSlidesPreQuiz(e.target.value)}
+                    className="text-input"
+                  />
+                  <input
+                    type="url"
+                    placeholder="Post-Quiz Google Form URL (optional)"
+                    value={googleSlidesPostQuiz}
+                    onChange={(e) => setGoogleSlidesPostQuiz(e.target.value)}
+                    className="text-input"
+                  />
+                  <button 
+                    className="upload-btn google-slides-btn"
+                    onClick={handleAddGoogleSlides}
+                    disabled={!googleSlidesName.trim() || !googleSlidesEmbedUrl.trim()}
+                  >
+                    ➕ Add Presentation
+                  </button>
+                  <div className="file-note">
+                    <strong>How to use:</strong> Copy the link from Share button (edit/view URL works) - we automatically convert it for embedding
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             <div className="files-list-section">
               <h3>📁 Available Presentations ({files.length})</h3>
@@ -220,15 +306,17 @@ const Curriculum: React.FC = () => {
                         {file.slides.length} slides • {file.uploadedAt}
                       </div>
                     </div>
-                    <button
-                      className="delete-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteFile(file.id);
-                      }}
-                    >
-                      🗑️
-                    </button>
+                    {user?.role === 'admin' && (
+                      <button
+                        className="delete-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteFile(file.id);
+                        }}
+                      >
+                        🗑️
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -359,7 +447,13 @@ const Curriculum: React.FC = () => {
                       <div className="quiz-display">
                         <div className="quiz-links">
                           {getQuizLinks(selectedFile.id).preQuizUrl ? (
-                            <a href={getQuizLinks(selectedFile.id).preQuizUrl} target="_blank" rel="noopener noreferrer" className="quiz-link pre-quiz">
+                            <a 
+                              href={getQuizLinks(selectedFile.id).preQuizUrl} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="quiz-link pre-quiz"
+                              onClick={() => {}}
+                            >
                               <span className="quiz-icon">📝</span>
                               <span className="quiz-text">Take Pre-Quiz</span>
                               <span className="external-icon">↗</span>
@@ -371,7 +465,13 @@ const Curriculum: React.FC = () => {
                             </div>
                           )}
                           {getQuizLinks(selectedFile.id).postQuizUrl ? (
-                            <a href={getQuizLinks(selectedFile.id).postQuizUrl} target="_blank" rel="noopener noreferrer" className="quiz-link post-quiz">
+                            <a 
+                              href={getQuizLinks(selectedFile.id).postQuizUrl} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="quiz-link post-quiz"
+                              onClick={() => {}}
+                            >
                               <span className="quiz-icon">✅</span>
                               <span className="quiz-text">Take Post-Quiz</span>
                               <span className="external-icon">↗</span>
@@ -383,9 +483,11 @@ const Curriculum: React.FC = () => {
                             </div>
                           )}
                         </div>
-                        <button className="edit-quiz-btn" onClick={() => startEditingQuiz(selectedFile.id)}>
-                          ✎ Edit Links
-                        </button>
+                        {user?.role === 'admin' && (
+                          <button className="edit-quiz-btn" onClick={() => startEditingQuiz(selectedFile.id)}>
+                            ✎ Edit Links
+                          </button>
+                        )}
                       </div>
                     )}
                   </div>

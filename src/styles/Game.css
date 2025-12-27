@@ -191,6 +191,28 @@
   font-size: 28px;
 }
 
+.site-integrity-definition {
+  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+  padding: 18px;
+  border-radius: 8px;
+  border-left: 4px solid #27ae60;
+  margin-bottom: 20px;
+}
+
+.site-integrity-definition p {
+  margin: 0;
+  color: #2e7d32;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.site-integrity-definition strong {
+  display: block;
+  color: #1b5e20;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
 .game-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -1500,6 +1522,158 @@
 
 .select-game-btn:active {
   transform: scale(0.98);
+}
+
+/* Selection Header with Instructions Button */
+.selection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.instructions-btn {
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.instructions-btn:hover {
+  background: linear-gradient(135deg, #229954 0%, #1a7a3f 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(39, 174, 96, 0.3);
+}
+
+/* Instructions Modal */
+.instructions-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.instructions-content {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+  position: relative;
+  animation: slideUp 0.4s ease;
+}
+
+.instructions-content h2 {
+  color: #1e3c72;
+  font-size: 32px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.instructions-section {
+  margin-bottom: 30px;
+  padding-bottom: 25px;
+  border-bottom: 2px solid #eee;
+}
+
+.instructions-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.instructions-section h3 {
+  color: #2a5298;
+  font-size: 20px;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.instructions-section p {
+  color: #333;
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.instructions-section ul,
+.instructions-section ol {
+  color: #333;
+  font-size: 15px;
+  line-height: 1.8;
+  margin: 15px 0;
+  padding-left: 25px;
+}
+
+.instructions-section li {
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.instructions-section strong {
+  color: #1e3c72;
+  font-weight: 700;
+}
+
+.close-instructions-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #f44336;
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 24px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-instructions-btn:hover {
+  background: #d32f2f;
+  transform: scale(1.1);
+}
+
+.close-instructions-btn-large {
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 16px;
+  transition: all 0.3s;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.close-instructions-btn-large:hover {
+  background: linear-gradient(135deg, #229954 0%, #1a7a3f 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(39, 174, 96, 0.3);
 }
 
 /* Site Integrity Game Styles */

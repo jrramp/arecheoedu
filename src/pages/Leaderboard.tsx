@@ -26,7 +26,7 @@ const Leaderboard: React.FC = () => {
     <div className="leaderboard-container">
       <nav className="navbar">
         <div className="nav-content">
-          <h1>🏛️ Relics Reimagined</h1>
+          <h1 style={{ cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>🏛️ Relics Reimagined</h1>
           <button className="back-btn" onClick={() => navigate('/dashboard')}>← Back</button>
         </div>
       </nav>

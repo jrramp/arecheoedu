@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Game.css';
+import '../styles/Game-lesson-styles.css';
 
 interface ArtifactData {
   id: number;
@@ -175,14 +176,13 @@ const Game: React.FC = () => {
   const [matchedArtifact, setMatchedArtifact] = useState<ArtifactData | null>(null);
   const [showFacts, setShowFacts] = useState(false);
   const [selectedGame, setSelectedGame] = useState<'memory' | 'siteIntegrity' | null>(null);
+  const [showInstructions, setShowInstructions] = useState(false);
 
   // Excavation game state
   const [excavationGrid, setExcavationGrid] = useState<boolean[]>([]);
   const [siteIntegrity, setSiteIntegrity] = useState<number>(100);
   const [excavatedCount, setExcavatedCount] = useState<number>(0);
   const [currentChallenge, setCurrentChallenge] = useState<{ id: number; type: string; description: string } | null>(null);
-  const [challengeShown, setChallengeShown] = useState(false);
-  const [lastIntegrity, setLastIntegrity] = useState<number>(100);
 
   // Site Integrity Questions Database (deprecated - using excavation game instead)
 
@@ -375,13 +375,48 @@ const Game: React.FC = () => {
     }
   };
 
-  // Excavation game functions
+  // Excavation game functions with educational content
   const excavationChallenges = [
-    { id: 1, type: 'careful', description: '⚠️ Fragile artifact detected! Excavate carefully?' },
-    { id: 2, type: 'careful', description: '🏺 Ancient pottery layer. Document before removal?' },
-    { id: 3, type: 'quick', description: '⚡ Clear loose soil quickly?' },
-    { id: 4, type: 'careful', description: '📜 Organic remains found. Preserve context?' },
-    { id: 5, type: 'careful', description: '🦴 Bone layer discovered. Sample preservation?' }
+    { 
+      id: 1, 
+      type: 'careful', 
+      description: '⚠️ Fragile artifact detected! Excavate carefully?',
+      lesson: "Site integrity means keeping the dig site whole and safe. Delicate things like pottery need to be dug up slowly and gently, like how you'd carefully unwrap a gift!",
+      careAnswer: 'Excellent! Your careful digging kept the artifact safe and whole.',
+      quickAnswer: 'Oops! Your digging was too rough and broke the artifact.'
+    },
+    { 
+      id: 2, 
+      type: 'careful', 
+      description: '🏺 Ancient pottery layer. Document before removal?',
+      lesson: 'Before you move something, write it down and take pictures! This helps us understand how ancient people lived and organized their things.',
+      careAnswer: 'Perfect! Your notes show how people arranged things a long time ago.',
+      quickAnswer: "Oh no! Without notes, we lost clues about how ancient people lived."
+    },
+    { 
+      id: 3, 
+      type: 'quick', 
+      description: '⚡ Clear loose soil quickly?',
+      lesson: 'Sometimes soil has no special artifacts in it. You can move this quickly to find the interesting stuff faster!',
+      careAnswer: "Slow. While careful, you're spending too much time on empty soil.",
+      quickAnswer: 'Great job! You cleared the unimportant soil and found the real treasures faster!'
+    },
+    { 
+      id: 4, 
+      type: 'careful', 
+      description: '📜 Organic remains found. Preserve context?',
+      lesson: 'Bones, wood, and seeds tell us what people ate and where they lived. We need to handle them extra carefully to keep them whole and safe.',
+      careAnswer: 'Excellent! Your careful work saved important clues about ancient diets and homes.',
+      quickAnswer: 'Uh-oh! Rough handling destroyed clues about what ancient people ate.'
+    },
+    { 
+      id: 5, 
+      type: 'careful', 
+      description: '🦴 Bone layer discovered. Sample preservation?',
+      lesson: "Bones are like history books! Scientists can learn about ancient people from bones if we keep them safe and clean.",
+      careAnswer: "Great! Your careful excavation kept the bones clean for scientists to study.",
+      quickAnswer: "Oops! Careless digging damaged the bones so scientists can't study them anymore."
+    }
   ];
 
   const initializeExcavationGame = () => {
@@ -390,8 +425,6 @@ const Game: React.FC = () => {
     setSiteIntegrity(100);
     setExcavatedCount(0);
     setCurrentChallenge(null);
-    setChallengeShown(false);
-    setLastIntegrity(100);
   };
 
   const handleExcavate = (index: number) => {
@@ -403,27 +436,34 @@ const Game: React.FC = () => {
     if (Math.random() < 0.4 && currentChallenge === null) {
       const randomChallenge = excavationChallenges[Math.floor(Math.random() * excavationChallenges.length)];
       setCurrentChallenge(randomChallenge);
-      setChallengeShown(false);
     }
   };
 
   const handleChallengeResponse = (chooseCareful: boolean) => {
     if (!currentChallenge) return;
     let integrityChange = 0;
+    let isCorrect = false;
+    let feedbackMessage = '';
+    
     if (currentChallenge.type === 'careful' && chooseCareful) {
       integrityChange = 10;
       setScore(score + 100);
+      isCorrect = true;
+      feedbackMessage = (currentChallenge as any).careAnswer || 'Good decision!';
     } else if (currentChallenge.type === 'quick' && !chooseCareful) {
       integrityChange = 10;
       setScore(score + 100);
+      isCorrect = true;
+      feedbackMessage = (currentChallenge as any).quickAnswer || 'Efficient choice!';
     } else {
       integrityChange = -15;
       setScore(Math.max(0, score - 25));
+      isCorrect = false;
+      feedbackMessage = chooseCareful ? ((currentChallenge as any).quickAnswer || 'Poor decision') : ((currentChallenge as any).careAnswer || 'Poor decision');
     }
     const newIntegrity = Math.max(0, Math.min(100, siteIntegrity + integrityChange));
     setSiteIntegrity(newIntegrity);
-    setLastIntegrity(newIntegrity);
-    setCurrentChallenge(null);
+    setCurrentChallenge({ ...(currentChallenge as any), feedback: feedbackMessage, isCorrect });
   };
 
   const getRarityColor = (rarity: string) => {
@@ -441,7 +481,7 @@ const Game: React.FC = () => {
       <div className="game-container">
         <nav className="navbar">
           <div className="nav-content">
-            <h1>🏛️ Relics Reimagined</h1>
+            <h1 style={{ cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>🏛️ Relics Reimagined</h1>
             <div className="nav-right">
               <span className="user-info">Welcome, {user?.displayName || 'Explorer'}!</span>
               <button className="back-btn" onClick={() => navigate('/dashboard')}>← Back</button>
@@ -452,7 +492,12 @@ const Game: React.FC = () => {
         <div className="game-content">
           {selectedGame === null ? (
             <div className="game-selection">
-              <h2>🎮 Choose Your Archaeological Adventure</h2>
+              <div className="selection-header">
+                <h2>🎮 Choose Your Archaeological Adventure</h2>
+                <button className="instructions-btn" onClick={() => setShowInstructions(true)}>
+                  📖 How to Play
+                </button>
+              </div>
               <p>Learn archaeology through interactive games and master the key concepts of archaeological preservation</p>
               
               <div className="games-grid">
@@ -584,6 +629,75 @@ const Game: React.FC = () => {
               <button className="back-selection-btn" onClick={() => setSelectedGame(null)}>
                 ← Back to Game Selection
               </button>
+            </div>
+          )}
+
+          {/* Instructions Modal Overlay */}
+          {showInstructions && (
+            <div className="instructions-modal">
+              <div className="instructions-content">
+                <button className="close-instructions-btn" onClick={() => setShowInstructions(false)}>✕</button>
+                <h2>📖 How to Play</h2>
+                
+                <div className="instructions-section">
+                  <h3>🎮 Game Selection</h3>
+                  <p>Choose between two exciting archaeological games:</p>
+                  <ul>
+                    <li><strong>Artifact Memory Challenge:</strong> Test your memory by matching pairs of artifacts and learning fascinating facts about ancient civilizations.</li>
+                    <li><strong>Site Integrity Challenge:</strong> Make excavation decisions that test your understanding of archaeological preservation and site integrity.</li>
+                  </ul>
+                </div>
+
+                <div className="instructions-section">
+                  <h3>🧩 Artifact Memory Challenge - How to Play</h3>
+                  <ol>
+                    <li><strong>Choose a Level:</strong> Start with Level 1 (Novice) for 6 cards, Level 2 (Expert) for 8 cards, or Level 3 (Master) for 10 cards.</li>
+                    <li><strong>Click to Flip:</strong> Click on cards to flip them over and reveal the artifacts.</li>
+                    <li><strong>Match Pairs:</strong> Find two identical artifacts. When you match a pair, they stay flipped!</li>
+                    <li><strong>Learn Facts:</strong> After matching all pairs, you'll see fascinating facts about each artifact.</li>
+                    <li><strong>Watch Your Moves:</strong> You have a limited number of moves. Use them wisely! More efficient matching = higher score!</li>
+                    <li><strong>Progress to Next Level:</strong> Complete all 3 levels to become a Master Archaeologist!</li>
+                  </ol>
+                </div>
+
+                <div className="instructions-section">
+                  <h3>🏗️ Site Integrity Challenge - How to Play</h3>
+                  <ol>
+                    <li><strong>Choose a Level:</strong> Progress through 3 levels with increasing complexity.</li>
+                    <li><strong>Excavate the Site:</strong> Click on grid squares to excavate them.</li>
+                    <li><strong>Answer Challenges:</strong> When you uncover a challenge, decide whether to excavate CAREFULLY (slow, preserves artifacts) or QUICKLY (fast but risky).</li>
+                    <li><strong>Understand Site Integrity:</strong> Site Integrity is the preservation and wholeness of an archaeological site. Keep your Site Integrity score high!</li>
+                    <li><strong>Careful = Green:</strong> Making the right careful excavation choices adds to your Site Integrity (green status = 70%+).</li>
+                    <li><strong>Risky = Red:</strong> Making quick, careless decisions reduces your Site Integrity (red status = below 40%).</li>
+                    <li><strong>Complete the Challenge:</strong> Finish all 3 levels to become an Excavation Expert!</li>
+                  </ol>
+                </div>
+
+                <div className="instructions-section">
+                  <h3>🏆 Scoring & Leaderboard</h3>
+                  <ul>
+                    <li><strong>Memory Game Scoring:</strong> Earn points based on moves used and time taken. More efficient = higher score!</li>
+                    <li><strong>Site Integrity Scoring:</strong> Earn points for correct excavation decisions and maintaining high site integrity.</li>
+                    <li><strong>Complete All Levels:</strong> Finish all 3 levels in a game to earn bonus points and compete on the leaderboard!</li>
+                    <li><strong>View Leaderboard:</strong> After completing a game, check the leaderboard to see how you rank!</li>
+                  </ul>
+                </div>
+
+                <div className="instructions-section">
+                  <h3>💡 Tips for Success</h3>
+                  <ul>
+                    <li>📚 <strong>Memory Game:</strong> Remember the positions of cards! Try to notice patterns and recall what you've seen.</li>
+                    <li>⚡ <strong>Memory Game:</strong> Work quickly but carefully - speed AND accuracy earn bonuses!</li>
+                    <li>🏗️ <strong>Site Integrity:</strong> Think about each choice carefully - rushing damages irreplaceable artifacts!</li>
+                    <li>📖 <strong>Site Integrity:</strong> Read the lesson for each challenge to understand WHY careful choices matter.</li>
+                    <li>🎯 <strong>Both Games:</strong> Higher accuracy = higher score = better leaderboard ranking!</li>
+                  </ul>
+                </div>
+
+                <button className="close-instructions-btn-large" onClick={() => setShowInstructions(false)}>
+                  Got It! Start Playing →
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -731,6 +845,9 @@ const Game: React.FC = () => {
               <div className="excavation-game">
                 <div className="game-header">
                   <h2>Preserve the Site Integrity</h2>
+                  <div className="site-integrity-definition">
+                    <p><strong>What is Site Integrity?</strong> It means keeping an archaeological dig site whole, safe, and undamaged - just like how you'd carefully protect something important that you want to keep forever!</p>
+                  </div>
                   <div className="game-stats">
                     <div className="stat-box">
                       <div className="stat-label">Site Integrity</div>
@@ -770,17 +887,20 @@ const Game: React.FC = () => {
                 ))}
               </div>
 
-              {/* Challenge Modal */}
-              {currentChallenge && !challengeShown && (
+              {/* Challenge Modal with Education */}
+              {currentChallenge && !(currentChallenge as any).feedback && (
                 <div className="challenge-modal">
                   <div className="challenge-content">
                     <div className="challenge-text">{currentChallenge.description}</div>
+                    <div className="lesson-box">
+                      <strong>💡 Site Integrity Lesson:</strong>
+                      <p>{(currentChallenge as any).lesson}</p>
+                    </div>
                     <div className="challenge-buttons">
                       <button
                         className="decision-btn careful"
                         onClick={() => {
                           handleChallengeResponse(true);
-                          setChallengeShown(true);
                         }}
                       >
                         ⚖️ Excavate Carefully
@@ -789,7 +909,6 @@ const Game: React.FC = () => {
                         className="decision-btn quick"
                         onClick={() => {
                           handleChallengeResponse(false);
-                          setChallengeShown(true);
                         }}
                       >
                         ⚡ Excavate Quickly
@@ -799,10 +918,21 @@ const Game: React.FC = () => {
                 </div>
               )}
 
-              {/* Challenge Result Message */}
-              {currentChallenge === null && challengeShown && (
-                <div className="challenge-result">
-                  {siteIntegrity >= lastIntegrity ? '✓ Good decision!' : '✗ Site integrity damaged'}
+              {/* Challenge Feedback Message */}
+              {currentChallenge && (currentChallenge as any).feedback && (
+                <div className={`challenge-result ${(currentChallenge as any).isCorrect ? 'correct' : 'incorrect'}`}>
+                  <div className="feedback-header">
+                    {(currentChallenge as any).isCorrect ? '✓ Correct!' : '✗ Incorrect'}
+                  </div>
+                  <div className="feedback-message">
+                    {(currentChallenge as any).feedback}
+                  </div>
+                  <button 
+                    className="continue-btn"
+                    onClick={() => setCurrentChallenge(null)}
+                  >
+                    Continue Excavating
+                  </button>
                 </div>
               )}
 
@@ -839,7 +969,7 @@ const Game: React.FC = () => {
         <div className="game-container">
           <nav className="navbar">
             <div className="nav-content">
-              <h1>🏛️ Relics Reimagined</h1>
+              <h1 style={{ cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>🏛️ Relics Reimagined</h1>
               <div className="nav-right">
                 <span className="user-info">Welcome, {user?.displayName || 'Explorer'}!</span>
               </div>
@@ -1030,7 +1160,7 @@ const Game: React.FC = () => {
         <div className="game-container">
           <nav className="navbar">
             <div className="nav-content">
-              <h1>🏛️ Relics Reimagined</h1>
+              <h1 style={{ cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>🏛️ Relics Reimagined</h1>
               <div className="nav-right">
                 <span className="user-info">Welcome, {user?.displayName || 'Explorer'}!</span>
               </div>
