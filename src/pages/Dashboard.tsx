@@ -108,17 +108,8 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="info-section">
-          <h3>🌍 About Archaeology</h3>
-          <p>
-            Archaeology is the study of past human societies through physical remains. 
-            In this game, you'll search for artifacts, decode ancient mysteries, and 
-            contribute to our understanding of ancient civilizations.
-          </p>
-        </div>
-
         {/* Activity Log Section */}
-        <div className="activity-section">
+        <div className="activity-section" style={{display: 'none'}}>
           <div className="activity-header">
             <h3>📋 Your Activity Log</h3>
             <button className="view-log-btn" onClick={() => setShowActivityLog(!showActivityLog)}>
