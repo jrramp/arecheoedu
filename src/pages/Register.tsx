@@ -6,7 +6,7 @@ import '../styles/Auth.css';
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, setUserDirect } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -41,11 +41,8 @@ const Register: React.FC = () => {
       // All new registrations are created as 'customer' type
       // Admin users must be added manually through the backend
       const registeredUser = await mockSignUp(email, password, displayName || 'Player', 'customer');
-      localStorage.setItem('mockAuthUser', JSON.stringify(registeredUser));
-      // Wait a moment for AuthContext to update
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 100);
+      setUserDirect(registeredUser);
+      navigate('/dashboard');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Registration failed';
       if (errorMessage.includes('email-already-in-use')) {

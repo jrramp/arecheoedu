@@ -67,6 +67,7 @@ interface AuthContextType {
   updateUserScore: (score: number) => void;
   addScoreToLeaderboard: (name: string, score: number) => void;
   getLeaderboard: () => LeaderboardEntry[];
+  setUserDirect: (user: MockUser | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -203,8 +204,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const setUserDirect = (user: MockUser | null) => {
+    setUser(user);
+    if (user) {
+      localStorage.setItem('mockAuthUser', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('mockAuthUser');
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, logout, updateUserScore, addScoreToLeaderboard, getLeaderboard }}>
+    <AuthContext.Provider value={{ user, loading, logout, updateUserScore, addScoreToLeaderboard, getLeaderboard, setUserDirect }}>
       {children}
     </AuthContext.Provider>
   );

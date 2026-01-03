@@ -6,7 +6,7 @@ import '../styles/Auth.css';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, setUserDirect } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -26,11 +26,8 @@ const Login: React.FC = () => {
 
     try {
       const loggedInUser = await mockSignIn(email, password);
-      localStorage.setItem('mockAuthUser', JSON.stringify(loggedInUser));
-      // Wait a moment for AuthContext to update
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 100);
+      setUserDirect(loggedInUser);
+      navigate('/dashboard');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Login failed';
       if (errorMessage.includes('user-not-found')) {

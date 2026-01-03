@@ -90,14 +90,16 @@ const Curriculum: React.FC = () => {
   useEffect(() => {
     loadPresentations();
     
-    // Auto-refresh presentations every 10 seconds for non-admin users
-    // and every 15 seconds for admins to see their changes reflected
+    // Only auto-refresh if no presentation is selected
+    // This prevents interrupting user while they're viewing
     const refreshInterval = setInterval(() => {
-      loadPresentations();
+      if (!selectedFile) {
+        loadPresentations();
+      }
     }, user?.role === 'admin' ? 15000 : 10000);
 
     return () => clearInterval(refreshInterval);
-  }, [user?.uid, user?.role]);
+  }, [user?.uid, user?.role, selectedFile]);
 
   // Save presentations to server whenever files change (only for admins)
   useEffect(() => {
