@@ -42,7 +42,8 @@
 }
 
 .logout-btn,
-.back-btn {
+.back-btn,
+.refresh-btn {
   padding: 8px 16px;
   background: rgba(255, 255, 255, 0.2);
   color: white;
@@ -55,7 +56,8 @@
 }
 
 .logout-btn:hover,
-.back-btn:hover {
+.back-btn:hover,
+.refresh-btn:hover {
   background: rgba(255, 255, 255, 0.3);
 }
 

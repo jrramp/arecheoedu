@@ -74,11 +74,19 @@ const Curriculum: React.FC = () => {
   // Load presentations on component mount and when user changes
   useEffect(() => {
     loadPresentations();
-  }, [user?.uid]);
+    
+    // Auto-refresh presentations every 5 seconds for non-admin users
+    // and every 10 seconds for admins to see their changes reflected
+    const refreshInterval = setInterval(() => {
+      loadPresentations();
+    }, user?.role === 'admin' ? 10000 : 5000);
 
-  // Save presentations to server whenever files change
+    return () => clearInterval(refreshInterval);
+  }, [user?.uid, user?.role]);
+
+  // Save presentations to server whenever files change (only for admins)
   useEffect(() => {
-    if (files.length === 0) return;
+    if (files.length === 0 || user?.role !== 'admin') return;
     
     const saveToServer = async () => {
       try {
@@ -228,6 +236,7 @@ const Curriculum: React.FC = () => {
           <h1 style={{ cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>🏛️ Relics Reimagined</h1>
           <div className="nav-right">
             <span className="user-info">Welcome, {user?.displayName || 'Explorer'}! <span style={{ fontSize: '12px', color: '#ddd' }}>({user?.role === 'admin' ? '👨‍💼 Admin' : '👤 Customer'})</span></span>
+            <button className="refresh-btn" onClick={loadPresentations} title="Refresh presentations">🔄</button>
             <button className="back-btn" onClick={() => navigate('/dashboard')}>← Back</button>
           </div>
         </div>
