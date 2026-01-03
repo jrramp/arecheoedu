@@ -43,6 +43,12 @@ const Curriculum: React.FC = () => {
   const [tempPostUrl, setTempPostUrl] = useState<string>('');
   const [tempGoogleSlidesUrl, setTempGoogleSlidesUrl] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [selectedFile, setSelectedFile] = useState<CurriculumFile | null>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [googleSlidesName, setGoogleSlidesName] = useState<string>('');
+  const [googleSlidesEmbedUrl, setGoogleSlidesEmbedUrl] = useState<string>('');
+  const [googleSlidesPreQuiz, setGoogleSlidesPreQuiz] = useState<string>('');
+  const [googleSlidesPostQuiz, setGoogleSlidesPostQuiz] = useState<string>('');
 
   // Function to load presentations from server
   const loadPresentations = async () => {
@@ -56,6 +62,15 @@ const Curriculum: React.FC = () => {
       if (presentationsRes.ok) {
         const presentations = await presentationsRes.json();
         setFiles(presentations);
+        
+        // If a presentation was selected, update it if it still exists
+        setSelectedFile((prevSelected) => {
+          if (prevSelected) {
+            const updatedSelected = presentations.find((p: CurriculumFile) => p.id === prevSelected.id);
+            return updatedSelected || null;
+          }
+          return null;
+        });
       }
 
       if (quizzesRes.ok) {
@@ -75,11 +90,11 @@ const Curriculum: React.FC = () => {
   useEffect(() => {
     loadPresentations();
     
-    // Auto-refresh presentations every 5 seconds for non-admin users
-    // and every 10 seconds for admins to see their changes reflected
+    // Auto-refresh presentations every 10 seconds for non-admin users
+    // and every 15 seconds for admins to see their changes reflected
     const refreshInterval = setInterval(() => {
       loadPresentations();
-    }, user?.role === 'admin' ? 10000 : 5000);
+    }, user?.role === 'admin' ? 15000 : 10000);
 
     return () => clearInterval(refreshInterval);
   }, [user?.uid, user?.role]);
@@ -123,13 +138,6 @@ const Curriculum: React.FC = () => {
     const timer = setTimeout(saveToServer, 500); // Debounce saves
     return () => clearTimeout(timer);
   }, [quizLinks]);
-
-  const [selectedFile, setSelectedFile] = useState<CurriculumFile | null>(null);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [googleSlidesName, setGoogleSlidesName] = useState<string>('');
-  const [googleSlidesEmbedUrl, setGoogleSlidesEmbedUrl] = useState<string>('');
-  const [googleSlidesPreQuiz, setGoogleSlidesPreQuiz] = useState<string>('');
-  const [googleSlidesPostQuiz, setGoogleSlidesPostQuiz] = useState<string>('');
 
   const handleAddGoogleSlides = () => {
     if (!googleSlidesName.trim() || !googleSlidesEmbedUrl.trim()) {
