@@ -1,0 +1,47 @@
+[
+  {
+    "id": "1",
+    "name": "Ancient Egypt: Pyramids and Pharaohs",
+    "uploadedAt": "2025-12-01",
+    "slides": [
+
+    ],
+    "preQuizUrl": "https://docs.google.com/forms/d/e/1FAIpQLSe08334N0rA2BZgU68AA7iGqUGxDS_UK8uU6yByplDmqcBx4w/viewform?usp=header",
+    "postQuizUrl": "https://docs.google.com/forms/d/e/1FAIpQLSfgXMH6QezNzaWBVpxORDXC9QxWuJSh7kjab2Xx6QdwhyFMtQ/viewform?usp=header",
+    "googleSlidesUrl":"https://docs.google.com/presentation/d/1LzNpCHPtnfIjgDnQ3MvHWYHeFCEqeoOGJ_ZnkPrsVcM/edit?slide=id.p#slide=id.p"
+  },
+    {
+    "id": "2",
+    "name": "The Parthenon",
+    "uploadedAt": "2025-12-01",
+    "slides": [
+
+    ],
+    "preQuizUrl": "https://docs.google.com/forms/u/0/d/e/1FAIpQLSde-hmJ54joaX0QaM4pJGd5r49GNu1TlkUA-90DT9BVNqizGQ/startquiz?usp=dialog",
+    "postQuizUrl": "https://docs.google.com/forms/u/0/d/e/1FAIpQLSenak3wmJtXE6wdmEZr7CymTgq8EnqJ8q-_ntRVaLZlNFUbBQ/startquiz?usp=dialog",
+    "googleSlidesUrl": "https://docs.google.com/presentation/d/1JvPDX-REwj_t4zIuB0W1zJxOR3g5BorUNgKFh4RTNrA/edit?slide=id.g3a7a91c003d_0_0#slide=id.g3a7a91c003d_0_0"
+  },
+   {
+    "id": "3",
+    "name": "Geology",
+    "uploadedAt": "2025-12-01",
+    "slides": [
+
+    ],
+    "preQuizUrl": "https://docs.google.com/forms/d/e/1FAIpQLScYR_tXx3VVc_7hqDVpwr-gDqQtpurZENX6RTEtwL-y3jGlnw/viewform?usp=header",
+    "postQuizUrl": "https://docs.google.com/forms/d/e/1FAIpQLSf8bKq9O8qdf-5cArKEpFivHHbqu5WSvGhZxHCQfB3yBqzRvA/viewform?usp=header",
+    "googleSlidesUrl": "https://docs.google.com/presentation/d/1eGpFk7oKrLk9Z6gVqC2qPT8Lu0B3jSRz7H6EgMN-Md0/edit?slide=id.g3b301e9cbfd_0_36#slide=id.g3b301e9cbfd_0_36"
+  },
+    {
+    "id": "4",
+    "name": "The Dueling Dinosaurs",
+    "uploadedAt": "2025-12-01",
+    "slides": [
+
+    ],
+    "preQuizUrl": "https://docs.google.com/forms/d/e/1FAIpQLSeOvfMwYXyNJp_LGr6Scxjul2O8jttC50HjnsX1dgpNKcP48w/viewform?usp=header",
+    "postQuizUrl": "https://docs.google.com/forms/d/e/1FAIpQLSeMIFcST-LC1XrzmTrK2bg6XGNOyOwT7rETCq7a7do0bHTHIQ/viewform?usp=header",
+    "googleSlidesUrl": "https://docs.google.com/presentation/d/1dqgGAg1zjPNgqF6u_EeL5wusQ4czsSZEBNczjrnzgps/edit?slide=id.p#slide=id.p"
+  }
+]
+

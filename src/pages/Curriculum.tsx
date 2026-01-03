@@ -30,8 +30,9 @@ interface QuizLinks {
 }
 
 // Global database storage keys (shared across all users)
-// NOTE: Data is now stored on server-side instead of localStorage
-const API_BASE_URL = 'http://localhost:3001/api';
+// NOTE: Data is now stored in a static JSON file in the public folder
+// Uses import.meta.env.BASE_URL to work both locally and on GitHub Pages
+const PRESENTATIONS_URL = `${import.meta.env.BASE_URL}presentations.json`;
 
 const Curriculum: React.FC = () => {
   const { user } = useAuth();
@@ -50,17 +51,17 @@ const Curriculum: React.FC = () => {
   const [googleSlidesPreQuiz, setGoogleSlidesPreQuiz] = useState<string>('');
   const [googleSlidesPostQuiz, setGoogleSlidesPostQuiz] = useState<string>('');
 
-  // Function to load presentations from server
+  // Function to load presentations from static file
   const loadPresentations = async () => {
     try {
       setLoading(true);
-      const [presentationsRes, quizzesRes] = await Promise.all([
-        fetch(`${API_BASE_URL}/presentations`),
-        fetch(`${API_BASE_URL}/quizzes`)
-      ]);
-
-      if (presentationsRes.ok) {
-        const presentations = await presentationsRes.json();
+      console.log('Loading presentations from:', PRESENTATIONS_URL);
+      const response = await fetch(PRESENTATIONS_URL);
+      console.log('Fetch response status:', response.status);
+      
+      if (response.ok) {
+        const presentations = await response.json();
+        console.log('Loaded presentations:', presentations);
         setFiles(presentations);
         
         // If a presentation was selected, update it if it still exists
@@ -71,10 +72,18 @@ const Curriculum: React.FC = () => {
           }
           return null;
         });
-      }
-
-      if (quizzesRes.ok) {
-        const quizzes = await quizzesRes.json();
+        
+        // Extract quiz links from presentations
+        const quizzes: QuizLinks = {};
+        presentations.forEach((p: any) => {
+          if (p.preQuizUrl || p.postQuizUrl || p.googleSlidesUrl) {
+            quizzes[p.id] = {
+              preQuizUrl: p.preQuizUrl || '',
+              postQuizUrl: p.postQuizUrl || '',
+              googleSlidesUrl: p.googleSlidesUrl || ''
+            };
+          }
+        });
         setQuizLinks(quizzes);
       }
     } catch (error) {
@@ -99,95 +108,27 @@ const Curriculum: React.FC = () => {
     }, user?.role === 'admin' ? 15000 : 10000);
 
     return () => clearInterval(refreshInterval);
-  }, [user?.uid, user?.role, selectedFile]);
+  }, [user?.uid, user?.role]);
 
   // Save presentations to server whenever files change (only for admins)
   useEffect(() => {
     if (files.length === 0 || user?.role !== 'admin') return;
     
-    const saveToServer = async () => {
-      try {
-        await fetch(`${API_BASE_URL}/presentations`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(files)
-        });
-      } catch (error) {
-        console.error('Error saving presentations to server:', error);
-      }
-    };
-
-    const timer = setTimeout(saveToServer, 500); // Debounce saves
-    return () => clearTimeout(timer);
-  }, [files]);
+    // Note: With static JSON file, presentations are read-only
+    // Admins would need to manually edit the public/presentations.json file
+    console.log('Admin presentations:', files);
+  }, [files, user?.role]);
 
   // Save quiz links to server whenever they change
   useEffect(() => {
     if (Object.keys(quizLinks).length === 0) return;
 
-    const saveToServer = async () => {
-      try {
-        await fetch(`${API_BASE_URL}/quizzes`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(quizLinks)
-        });
-      } catch (error) {
-        console.error('Error saving quizzes to server:', error);
-      }
-    };
-
-    const timer = setTimeout(saveToServer, 500); // Debounce saves
-    return () => clearTimeout(timer);
+    // Note: With static JSON file, quiz links are read-only
+    console.log('Updated quiz links:', quizLinks);
   }, [quizLinks]);
 
   const handleAddGoogleSlides = () => {
-    if (!googleSlidesName.trim() || !googleSlidesEmbedUrl.trim()) {
-      alert('Please enter both a presentation name and Google Slides URL');
-      return;
-    }
-
-    // Extract presentation ID from various Google Slides URL formats
-    let embedUrl = googleSlidesEmbedUrl;
-    
-    // Match presentation ID from edit, view, or preview URLs
-    const idMatch = googleSlidesEmbedUrl.match(/\/presentation\/d\/([a-zA-Z0-9-_]+)/);
-    if (idMatch && idMatch[1]) {
-      const presentationId = idMatch[1];
-      embedUrl = `https://docs.google.com/presentation/d/${presentationId}/embed?start=false&loop=false&delayms=3000`;
-    }
-
-    // Create new presentation entry with Google Slides
-    const newPresentation: CurriculumFile = {
-      id: Date.now().toString(),
-      name: googleSlidesName,
-      uploadedAt: new Date().toISOString().split('T')[0],
-      slides: [
-        { 
-          id: 1, 
-          title: googleSlidesName, 
-          content: 'Google Slides presentation - view the embedded presentation above' 
-        },
-      ]
-    };
-
-    // Add the Google Slides URL and quiz URLs to quiz links
-    setQuizLinks({
-      ...quizLinks,
-      [newPresentation.id]: {
-        preQuizUrl: googleSlidesPreQuiz,
-        postQuizUrl: googleSlidesPostQuiz,
-        googleSlidesUrl: embedUrl
-      }
-    });
-
-    setFiles([...files, newPresentation]);
-    setSelectedFile(newPresentation);
-    setCurrentSlide(0);
-    setGoogleSlidesName('');
-    setGoogleSlidesEmbedUrl('');
-    setGoogleSlidesPreQuiz('');
-    setGoogleSlidesPostQuiz('');
+    alert('With static JSON file storage, presentations are read-only. To add presentations, please edit the public/presentations.json file and reload the page.');
   };
 
   const nextSlide = () => {
@@ -203,16 +144,9 @@ const Curriculum: React.FC = () => {
   };
 
   const deleteFile = async (id: string) => {
-    try {
-      await fetch(`${API_BASE_URL}/presentations/${id}`, { method: 'DELETE' });
-      setFiles(files.filter(f => f.id !== id));
-      if (selectedFile?.id === id) {
-        setSelectedFile(null);
-        setCurrentSlide(0);
-      }
-    } catch (error) {
-      console.error('Error deleting presentation:', error);
-    }
+    // With static JSON file, deletion would require manual file editing
+    alert('To delete presentations, please edit the public/presentations.json file and reload the page.');
+    console.log('Presentation to delete:', id);
   };
 
   const startEditingQuiz = (fileId: string) => {
@@ -322,7 +256,7 @@ const Curriculum: React.FC = () => {
                     <div className="file-info">
                       <div className="file-name">📄 {file.name}</div>
                       <div className="file-meta">
-                        {file.slides.length} slides • {file.uploadedAt}
+                        {file.uploadedAt}
                       </div>
                     </div>
                     {user?.role === 'admin' && (
@@ -349,24 +283,8 @@ const Curriculum: React.FC = () => {
                 <div className="slide-viewer">
                   <h3 className="presentation-title">📊 {selectedFile.name}</h3>
                   
-                  {/* Google Slides Embed Display */}
-                  {getQuizLinks(selectedFile.id).googleSlidesUrl && (
-                    <div className="google-slides-main-container">
-                      <iframe
-                        src={getQuizLinks(selectedFile.id).googleSlidesUrl}
-                        width="100%"
-                        height="600"
-                        frameBorder="0"
-                        allow="fullscreen; autoplay; presentation"
-                        allowFullScreen
-                        sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox allow-presentation"
-                        title="Google Slides Presentation"
-                      ></iframe>
-                    </div>
-                  )}
-
-                  {/* Fallback Slide Display (for non-Google Slides presentations) */}
-                  {!getQuizLinks(selectedFile.id).googleSlidesUrl && (
+                  {/* Show slides if array is not empty, otherwise show Google Slides embed */}
+                  {selectedFile.slides.length > 0 ? (
                     <div className="slide-content">
                       <div className="slide">
                         <div className="slide-title">
@@ -377,10 +295,25 @@ const Curriculum: React.FC = () => {
                         </div>
                       </div>
                     </div>
+                  ) : (
+                    getQuizLinks(selectedFile.id).googleSlidesUrl && (
+                      <div className="google-slides-main-container">
+                        <iframe
+                          src={getQuizLinks(selectedFile.id).googleSlidesUrl}
+                          width="100%"
+                          height="600"
+                          frameBorder="0"
+                          allow="fullscreen; autoplay; presentation"
+                          allowFullScreen
+                          sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox allow-presentation"
+                          title="Google Slides Presentation"
+                        ></iframe>
+                      </div>
+                    )
                   )}
 
-                  {/* Slide Controls (only show if not Google Slides) */}
-                  {!getQuizLinks(selectedFile.id).googleSlidesUrl && (
+                  {/* Slide Controls (only show if slides array is not empty) */}
+                  {selectedFile.slides.length > 0 && (
                     <>
                       <div className="slide-controls">
                         <button
