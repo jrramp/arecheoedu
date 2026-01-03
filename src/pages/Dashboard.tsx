@@ -54,20 +54,20 @@ const Dashboard: React.FC = () => {
 
       <div className="dashboard-content">
         <div className="welcome-section">
-          <h2>Welcome to the Archaeological Adventure!</h2>
-          <p>Explore ancient ruins, discover hidden artifacts, and become a master archaeologist.</p>
+          <h2>What is Archaeology?</h2>
+          <p>Archaeology is the scientific study of human history and cultures through the investigation of artifacts, structures, and sites. Archaeologists uncover the secrets of ancient civilizations, piece together how people lived thousands of years ago, and preserve the heritage of our world. Every artifact tells a story—from ancient pottery and tools to monumental pyramids and temples. Join us on an adventure to explore the wonders of the past and become an archaeologist yourself!</p>
         </div>
 
         <div className="game-options">
           <div className="option-card">
-            <div className="option-emoji">🎮</div>
-            <h3>Play Game</h3>
-            <p>Start your archaeological expedition and discover ancient artifacts.</p>
+            <div className="option-emoji">ℹ️</div>
+            <h3>About</h3>
+            <p>Learn more about archaeology and this game.</p>
             <button 
               className="option-btn"
-              onClick={() => navigate('/game')}
+              onClick={() => navigate('/about')}
             >
-              Start Game
+              Learn More
             </button>
           </div>
 
@@ -84,7 +84,19 @@ const Dashboard: React.FC = () => {
           </div>
 
           <div className="option-card">
-            <div className="option-emoji">�📊</div>
+            <div className="option-emoji">🎮</div>
+            <h3>Play Game</h3>
+            <p>Start your archaeological expedition and discover ancient artifacts.</p>
+            <button 
+              className="option-btn"
+              onClick={() => navigate('/game')}
+            >
+              Start Game
+            </button>
+          </div>
+
+          <div className="option-card">
+            <div className="option-emoji">📊</div>
             <h3>Leaderboard</h3>
             <p>See how you compare with other archaeologists.</p>
             <button 
@@ -92,18 +104,6 @@ const Dashboard: React.FC = () => {
               onClick={() => navigate('/leaderboard')}
             >
               View Scores
-            </button>
-          </div>
-
-          <div className="option-card">
-            <div className="option-emoji">ℹ️</div>
-            <h3>About</h3>
-            <p>Learn more about archaeology and this game.</p>
-            <button 
-              className="option-btn"
-              onClick={() => navigate('/about')}
-            >
-              Learn More
             </button>
           </div>
         </div>
