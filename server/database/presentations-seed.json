@@ -1,0 +1,137 @@
+[
+  {
+    "id": "1",
+    "name": "Ancient Egypt: Pyramids and Pharaohs",
+    "uploadedAt": "2025-12-01",
+    "slides": [
+      {
+        "id": 1,
+        "title": "Ancient Egypt: Pyramids and Pharaohs",
+        "content": "Learn about the magnificent pyramids of Egypt and the pharaohs who built them"
+      },
+      {
+        "id": 2,
+        "title": "The Great Pyramids",
+        "content": "The Great Pyramids of Giza are among the most impressive structures ever built, constructed around 2500 BCE"
+      },
+      {
+        "id": 3,
+        "title": "Pharaohs and Dynasties",
+        "content": "Pharaohs ruled ancient Egypt for over 3000 years, organizing one of the world's greatest civilizations"
+      },
+      {
+        "id": 4,
+        "title": "Hieroglyphics",
+        "content": "Ancient Egyptians used hieroglyphics as their writing system, which was finally decoded in 1822"
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Roman Empire: Rise and Fall",
+    "uploadedAt": "2025-12-02",
+    "slides": [
+      {
+        "id": 1,
+        "title": "The Roman Empire",
+        "content": "One of the most powerful civilizations in history, the Roman Empire lasted over 1000 years"
+      },
+      {
+        "id": 2,
+        "title": "The Colosseum",
+        "content": "The Colosseum is an iconic amphitheater built in Rome between 70-80 CE, able to hold 50,000 spectators"
+      },
+      {
+        "id": 3,
+        "title": "Roman Government",
+        "content": "The Romans developed complex governmental systems including the Senate and laws that influence modern governments"
+      },
+      {
+        "id": 4,
+        "title": "Fall of Rome",
+        "content": "The Western Roman Empire fell in 476 CE due to political instability, invasions, and economic decline"
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "name": "Medieval Castles and Fortifications",
+    "uploadedAt": "2025-12-03",
+    "slides": [
+      {
+        "id": 1,
+        "title": "Medieval Castles",
+        "content": "Castles were built during the Middle Ages as strongholds for nobility and military defense"
+      },
+      {
+        "id": 2,
+        "title": "Castle Architecture",
+        "content": "Medieval castles featured high walls, towers, moats, and drawbridges for protection"
+      },
+      {
+        "id": 3,
+        "title": "Famous Castles",
+        "content": "Notable castles include Windsor Castle in England, Neuschwanstein Castle in Germany, and Mont-Saint-Michel in France"
+      },
+      {
+        "id": 4,
+        "title": "Life in a Castle",
+        "content": "Castles were not just military fortresses but also homes to nobility, with complex social hierarchies"
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "name": "Ancient Greece: Philosophy and Democracy",
+    "uploadedAt": "2025-12-04",
+    "slides": [
+      {
+        "id": 1,
+        "title": "Ancient Greece",
+        "content": "Ancient Greece was the birthplace of Western democracy, philosophy, and Olympic games"
+      },
+      {
+        "id": 2,
+        "title": "Greek Philosophers",
+        "content": "Great thinkers like Socrates, Plato, and Aristotle shaped Western philosophy and education"
+      },
+      {
+        "id": 3,
+        "title": "Athenian Democracy",
+        "content": "Athens developed the first democratic government where citizens could vote on important decisions"
+      },
+      {
+        "id": 4,
+        "title": "The Parthenon",
+        "content": "The Parthenon is a temple dedicated to Athena, built on the Acropolis in Athens between 447-432 BCE"
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "name": "Archaeology Methods and Techniques",
+    "uploadedAt": "2025-12-05",
+    "slides": [
+      {
+        "id": 1,
+        "title": "Archaeology Methods",
+        "content": "Archaeologists use scientific methods to discover, document, and preserve ancient artifacts and structures"
+      },
+      {
+        "id": 2,
+        "title": "Excavation Techniques",
+        "content": "Careful excavation is done layer by layer (stratigraphy) to understand the chronology of artifacts"
+      },
+      {
+        "id": 3,
+        "title": "Dating Methods",
+        "content": "Archaeologists use radiocarbon dating, thermoluminescence, and other scientific methods to determine artifact age"
+      },
+      {
+        "id": 4,
+        "title": "Artifact Preservation",
+        "content": "Once discovered, artifacts are carefully preserved and studied to learn about ancient civilizations"
+      }
+    ]
+  }
+]

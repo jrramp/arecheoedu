@@ -18,6 +18,8 @@ app.use(express.json());
 const dbDir = path.join(__dirname, 'server', 'database');
 const presentationsFile = path.join(dbDir, 'presentations.json');
 const quizzesFile = path.join(dbDir, 'quizzes.json');
+const presentationsSeedFile = path.join(dbDir, 'presentations-seed.json');
+const quizzesSeedFile = path.join(dbDir, 'quizzes-seed.json');
 
 // Initialize database directory and files if they don't exist
 const initializeDatabase = () => {
@@ -25,12 +27,36 @@ const initializeDatabase = () => {
     fs.mkdirSync(dbDir, { recursive: true });
   }
 
+  // Initialize presentations - use seed data if empty
   if (!fs.existsSync(presentationsFile)) {
-    fs.writeFileSync(presentationsFile, JSON.stringify([], null, 2));
+    try {
+      if (fs.existsSync(presentationsSeedFile)) {
+        const seedData = fs.readFileSync(presentationsSeedFile, 'utf-8');
+        fs.writeFileSync(presentationsFile, seedData);
+        console.log('✓ Initialized presentations from seed data');
+      } else {
+        fs.writeFileSync(presentationsFile, JSON.stringify([], null, 2));
+      }
+    } catch (error) {
+      console.error('Error initializing presentations:', error);
+      fs.writeFileSync(presentationsFile, JSON.stringify([], null, 2));
+    }
   }
 
+  // Initialize quizzes - use seed data if empty
   if (!fs.existsSync(quizzesFile)) {
-    fs.writeFileSync(quizzesFile, JSON.stringify({}, null, 2));
+    try {
+      if (fs.existsSync(quizzesSeedFile)) {
+        const seedData = fs.readFileSync(quizzesSeedFile, 'utf-8');
+        fs.writeFileSync(quizzesFile, seedData);
+        console.log('✓ Initialized quizzes from seed data');
+      } else {
+        fs.writeFileSync(quizzesFile, JSON.stringify({}, null, 2));
+      }
+    } catch (error) {
+      console.error('Error initializing quizzes:', error);
+      fs.writeFileSync(quizzesFile, JSON.stringify({}, null, 2));
+    }
   }
 };
 

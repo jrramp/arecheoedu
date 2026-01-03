@@ -1,0 +1,27 @@
+{
+  "1": {
+    "preQuizUrl": "https://forms.gle/example1",
+    "postQuizUrl": "https://forms.gle/example1post",
+    "googleSlidesUrl": "https://docs.google.com/presentation/d/example1/embed?start=false&loop=false&delayms=3000"
+  },
+  "2": {
+    "preQuizUrl": "https://forms.gle/example2",
+    "postQuizUrl": "https://forms.gle/example2post",
+    "googleSlidesUrl": "https://docs.google.com/presentation/d/example2/embed?start=false&loop=false&delayms=3000"
+  },
+  "3": {
+    "preQuizUrl": "https://forms.gle/example3",
+    "postQuizUrl": "https://forms.gle/example3post",
+    "googleSlidesUrl": "https://docs.google.com/presentation/d/example3/embed?start=false&loop=false&delayms=3000"
+  },
+  "4": {
+    "preQuizUrl": "https://forms.gle/example4",
+    "postQuizUrl": "https://forms.gle/example4post",
+    "googleSlidesUrl": "https://docs.google.com/presentation/d/example4/embed?start=false&loop=false&delayms=3000"
+  },
+  "5": {
+    "preQuizUrl": "https://forms.gle/example5",
+    "postQuizUrl": "https://forms.gle/example5post",
+    "googleSlidesUrl": "https://docs.google.com/presentation/d/example5/embed?start=false&loop=false&delayms=3000"
+  }
+}
