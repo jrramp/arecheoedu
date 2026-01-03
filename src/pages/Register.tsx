@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { mockSignUp } from '../context/AuthContext';
 import '../styles/Auth.css';
 
 const Register: React.FC = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -32,7 +33,7 @@ const Register: React.FC = () => {
       // Admin users must be added manually through the backend
       const user = await mockSignUp(email, password, displayName || 'Player', 'customer');
       localStorage.setItem('mockAuthUser', JSON.stringify(user));
-      window.location.href = '/dashboard';
+      navigate('/dashboard');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Registration failed';
       if (errorMessage.includes('email-already-in-use')) {

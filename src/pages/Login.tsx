@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { mockSignIn } from '../context/AuthContext';
 import '../styles/Auth.css';
 
 const Login: React.FC = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -17,7 +18,7 @@ const Login: React.FC = () => {
     try {
       const user = await mockSignIn(email, password);
       localStorage.setItem('mockAuthUser', JSON.stringify(user));
-      window.location.href = '/dashboard';
+      navigate('/dashboard');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Login failed';
       if (errorMessage.includes('user-not-found')) {

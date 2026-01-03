@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { mockSignUp } from '../context/AuthContext';
 import '../styles/Auth.css';
 
 const AdminSetup: React.FC = () => {
+  const navigate = useNavigate();
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
 
@@ -104,6 +106,12 @@ const AdminSetup: React.FC = () => {
           <p>
             <strong>Note:</strong> This is demo mode with mock authentication. No Firebase credentials required!
           </p>
+        </div>
+
+        <div style={{ marginTop: '20px', textAlign: 'center' }}>
+          <button className="nav-link-btn" onClick={() => navigate('/')} style={{ background: 'none', border: 'none', color: '#667eea', cursor: 'pointer', textDecoration: 'underline', fontSize: '14px' }}>
+            ← Back to Home
+          </button>
         </div>
       </div>
     </div>
