@@ -94,9 +94,9 @@ const mockSignUp = (email: string, password: string, displayName: string, role: 
         // Save to localStorage (file-based database)
         localStorage.setItem(USER_DATABASE_KEY, JSON.stringify(mockUsers));
 
-        // Create session user
+        // Create session user with consistent UID based on email
         const user: MockUser = {
-          uid: Math.random().toString(36).substr(2, 9),
+          uid: btoa(email).replace(/=/g, '').substring(0, 15),
           email,
           displayName: displayName || 'Player',
           role
@@ -117,9 +117,9 @@ const mockSignIn = (email: string, password: string): Promise<MockUser> => {
       } else if (userReg.password !== password) {
         reject(new Error('auth/wrong-password'));
       } else {
-        // Create session user
+        // Create session user with consistent UID based on email
         const mockUser: MockUser = {
-          uid: Math.random().toString(36).substr(2, 9),
+          uid: btoa(email).replace(/=/g, '').substring(0, 15),
           email,
           displayName: userReg.displayName,
           role: userReg.role
