@@ -1,16 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { mockSignUp } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import '../styles/Auth.css';
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // If user is already logged in, redirect to dashboard
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,9 +40,12 @@ const Register: React.FC = () => {
     try {
       // All new registrations are created as 'customer' type
       // Admin users must be added manually through the backend
-      const user = await mockSignUp(email, password, displayName || 'Player', 'customer');
-      localStorage.setItem('mockAuthUser', JSON.stringify(user));
-      navigate('/dashboard');
+      const registeredUser = await mockSignUp(email, password, displayName || 'Player', 'customer');
+      localStorage.setItem('mockAuthUser', JSON.stringify(registeredUser));
+      // Wait a moment for AuthContext to update
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 100);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Registration failed';
       if (errorMessage.includes('email-already-in-use')) {
@@ -41,7 +53,6 @@ const Register: React.FC = () => {
       } else {
         setError(errorMessage);
       }
-    } finally {
       setLoading(false);
     }
   };

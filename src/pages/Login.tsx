@@ -1,14 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { mockSignIn } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import '../styles/Auth.css';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // If user is already logged in, redirect to dashboard
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,9 +25,12 @@ const Login: React.FC = () => {
     setLoading(true);
 
     try {
-      const user = await mockSignIn(email, password);
-      localStorage.setItem('mockAuthUser', JSON.stringify(user));
-      navigate('/dashboard');
+      const loggedInUser = await mockSignIn(email, password);
+      localStorage.setItem('mockAuthUser', JSON.stringify(loggedInUser));
+      // Wait a moment for AuthContext to update
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 100);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Login failed';
       if (errorMessage.includes('user-not-found')) {
@@ -28,7 +40,6 @@ const Login: React.FC = () => {
       } else {
         setError(errorMessage);
       }
-    } finally {
       setLoading(false);
     }
   };

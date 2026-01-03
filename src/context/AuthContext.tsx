@@ -53,7 +53,6 @@ const initializeUserDatabase = () => {
 
 // In-memory cache of user database
 let mockUsers = initializeUserDatabase();
-let mockCurrentUser: MockUser | null = null;
 
 export interface LeaderboardEntry {
   name: string;
@@ -101,7 +100,6 @@ const mockSignUp = (email: string, password: string, displayName: string, role: 
           displayName: displayName || 'Player',
           role
         };
-        mockCurrentUser = user;
         resolve(user);
       }
     }, 500);
@@ -124,7 +122,6 @@ const mockSignIn = (email: string, password: string): Promise<MockUser> => {
           displayName: userReg.displayName,
           role: userReg.role
         };
-        mockCurrentUser = mockUser;
         resolve(mockUser);
       }
     }, 500);
@@ -134,7 +131,6 @@ const mockSignIn = (email: string, password: string): Promise<MockUser> => {
 const mockLogOut = (): Promise<void> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      mockCurrentUser = null;
       resolve();
     }, 300);
   });
@@ -144,21 +140,33 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<MockUser | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Simulate checking for saved session
-    setTimeout(() => {
-      const savedUser = localStorage.getItem('mockAuthUser');
-      if (savedUser) {
-        try {
-          setUser(JSON.parse(savedUser));
-        } catch {
-          setUser(null);
-        }
-      } else {
-        setUser(mockCurrentUser);
+  // Function to sync user from localStorage
+  const syncUserFromStorage = () => {
+    const savedUser = localStorage.getItem('mockAuthUser');
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch {
+        setUser(null);
       }
-      setLoading(false);
-    }, 100);
+    } else {
+      setUser(null);
+    }
+  };
+
+  useEffect(() => {
+    // Check for saved session on mount
+    syncUserFromStorage();
+    setLoading(false);
+
+    // Listen for storage changes (other tabs/windows)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'mockAuthUser') {
+        syncUserFromStorage();
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   const logout = async () => {
