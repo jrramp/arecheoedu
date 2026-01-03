@@ -50,6 +50,7 @@ const Curriculum: React.FC = () => {
   const [googleSlidesEmbedUrl, setGoogleSlidesEmbedUrl] = useState<string>('');
   const [googleSlidesPreQuiz, setGoogleSlidesPreQuiz] = useState<string>('');
   const [googleSlidesPostQuiz, setGoogleSlidesPostQuiz] = useState<string>('');
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Function to load presentations from static file
   const loadPresentations = async () => {
@@ -149,6 +150,14 @@ const Curriculum: React.FC = () => {
     console.log('Presentation to delete:', id);
   };
 
+  const toggleFullscreen = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setIsFullscreen(!isFullscreen);
+  };
+
   const startEditingQuiz = (fileId: string) => {
     const current = quizLinks[fileId] || { preQuizUrl: '', postQuizUrl: '', googleSlidesUrl: '' };
     setTempPreUrl(current.preQuizUrl);
@@ -192,7 +201,7 @@ const Curriculum: React.FC = () => {
 
         {loading && <div style={{ textAlign: 'center', padding: '20px', color: '#667eea' }}>⏳ Loading presentations...</div>}
 
-        <div className="curriculum-layout">
+        <div className={`curriculum-layout ${isFullscreen ? 'fullscreen-active' : ''}`}>
           {/* Left Panel: File List */}
           <div className="files-panel">
             {user?.role === 'admin' && (
@@ -280,12 +289,39 @@ const Curriculum: React.FC = () => {
           <div className="viewer-panel">
             {selectedFile ? (
               <>
-                <div className="slide-viewer">
-                  <h3 className="presentation-title">📊 {selectedFile.name}</h3>
+                <div 
+                  className={`slide-viewer ${isFullscreen ? 'fullscreen' : ''}`}
+                  onClick={(e) => {
+                    if (e.target === e.currentTarget) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }
+                  }}
+                >
+                  <div className="presentation-header">
+                    <h3 className="presentation-title">📊 {selectedFile.name}</h3>
+                    <button 
+                      type="button"
+                      className="fullscreen-btn" 
+                      onClick={toggleFullscreen}
+                      title="Toggle fullscreen"
+                    >
+                      {isFullscreen ? '⛶' : '⛶'}
+                    </button>
+                  </div>
                   
                   {/* Show slides if array is not empty, otherwise show Google Slides embed */}
                   {selectedFile.slides.length > 0 ? (
-                    <div className="slide-content">
+                    <div 
+                      className="slide-content"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (e.target instanceof HTMLAnchorElement) {
+                          e.target.click();
+                        }
+                      }}
+                    >
                       <div className="slide">
                         <div className="slide-title">
                           {selectedFile.slides[currentSlide].title}

@@ -32,11 +32,19 @@
   margin-bottom: 40px;
 }
 
+.curriculum-layout.fullscreen-active {
+  grid-template-columns: 1fr;
+}
+
 /* Files Panel */
 .files-panel {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.curriculum-layout.fullscreen-active .files-panel {
+  display: none;
 }
 
 .upload-section {
@@ -229,12 +237,91 @@
   height: 100%;
 }
 
+.slide-viewer.fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+  border-radius: 0 !important;
+  padding: 40px !important;
+  z-index: 9999 !important;
+  overflow-y: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  inset: 0 !important;
+}
+
+.slide-viewer.fullscreen .presentation-header {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  padding-bottom: 20px;
+  z-index: 10000;
+}
+
+.presentation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 .presentation-title {
   color: #1e3c72;
-  margin-bottom: 20px;
+  margin: 0;
   font-size: 18px;
   padding-bottom: 15px;
   border-bottom: 2px solid #e0e0e0;
+  flex: 1;
+}
+
+.slide-viewer.fullscreen .presentation-title {
+  color: white;
+  border-bottom-color: rgba(255, 255, 255, 0.3);
+  font-size: 24px;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.fullscreen-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  padding: 5px 15px;
+  color: #1e3c72;
+  transition: transform 0.2s ease;
+  margin-left: 10px;
+}
+
+.slide-viewer.fullscreen .fullscreen-btn {
+  color: white;
+}
+
+.fullscreen-btn:hover {
+  transform: scale(1.1);
+}
+
+.slide-viewer.fullscreen .slide-content {
+  min-height: 60vh;
+  margin-bottom: 30px;
+}
+
+.slide-viewer.fullscreen .slide {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 60px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.curriculum-layout {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 30px;
+  margin-bottom: 40px;
 }
 
 .slide-content {
