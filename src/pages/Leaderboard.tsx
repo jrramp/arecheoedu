@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import type { LeaderboardEntry } from '../context/AuthContext';
+import Header from '../components/Header';
 import '../styles/Leaderboard.css';
 
 interface DisplayEntry extends LeaderboardEntry {
@@ -24,12 +25,11 @@ const Leaderboard: React.FC = () => {
 
   return (
     <div className="leaderboard-container">
-      <nav className="navbar">
-        <div className="nav-content">
-          <h1 style={{ cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>🏛️ Relics Reimagined</h1>
-          <button className="back-btn" onClick={() => navigate('/dashboard')}>← Back</button>
-        </div>
-      </nav>
+      <Header 
+        onLogoClick={() => navigate('/dashboard')}
+      >
+        <button className="back-btn" onClick={() => navigate('/dashboard')}>← Back</button>
+      </Header>
 
       <div className="leaderboard-content">
         <h2>🏆 Leaderboard</h2>

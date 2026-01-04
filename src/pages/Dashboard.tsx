@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getUserActivityLogs, exportActivityLogs } from '../utils/activityTracker';
+import Header from '../components/Header';
 import '../styles/Dashboard.css';
 
 const Dashboard: React.FC = () => {
@@ -42,15 +43,12 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="dashboard-container">
-      <nav className="navbar">
-        <div className="nav-content">
-          <h1 style={{ cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>🏛️ Relics Reimagined</h1>
-          <div className="nav-right">
-            <span className="user-info">Welcome, {user?.displayName || 'Explorer'}!</span>
-            <button className="logout-btn" onClick={handleLogout}>Logout</button>
-          </div>
-        </div>
-      </nav>
+      <Header 
+        onLogoClick={() => navigate('/dashboard')}
+      >
+        <span className="user-info">Welcome, {user?.displayName || 'Explorer'}!</span>
+        <button className="logout-btn" onClick={handleLogout}>Logout</button>
+      </Header>
 
       <div className="dashboard-content">
         <div className="welcome-section">

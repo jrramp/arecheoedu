@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Header from '../components/Header';
 import '../styles/Game.css';
 import '../styles/Game-lesson-styles.css';
 
@@ -479,15 +480,12 @@ const Game: React.FC = () => {
   if (gameState === 'levelSelect') {
     return (
       <div className="game-container">
-        <nav className="navbar">
-          <div className="nav-content">
-            <h1 style={{ cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>🏛️ Relics Reimagined</h1>
-            <div className="nav-right">
-              <span className="user-info">Welcome, {user?.displayName || 'Explorer'}!</span>
-              <button className="back-btn" onClick={() => navigate('/dashboard')}>← Back</button>
-            </div>
-          </div>
-        </nav>
+        <Header 
+          onLogoClick={() => navigate('/dashboard')}
+        >
+          <span className="user-info">Welcome, {user?.displayName || 'Explorer'}!</span>
+          <button className="back-btn" onClick={() => navigate('/dashboard')}>← Back</button>
+        </Header>
 
         <div className="game-content">
           {selectedGame === null ? (
@@ -967,14 +965,11 @@ const Game: React.FC = () => {
 
       return (
         <div className="game-container">
-          <nav className="navbar">
-            <div className="nav-content">
-              <h1 style={{ cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>🏛️ Relics Reimagined</h1>
-              <div className="nav-right">
-                <span className="user-info">Welcome, {user?.displayName || 'Explorer'}!</span>
-              </div>
-            </div>
-          </nav>
+          <Header 
+            onLogoClick={() => navigate('/dashboard')}
+          >
+            <span className="user-info">Welcome, {user?.displayName || 'Explorer'}!</span>
+          </Header>
 
           <div className="game-content">
             <div className="completion-screen">
@@ -1155,17 +1150,13 @@ const Game: React.FC = () => {
       // Memory game finished screen
       const currentMoveLimit = moveLimit[currentLevel] || 15;
       const movedExceededLimit = moves > currentMoveLimit;
-
       return (
         <div className="game-container">
-          <nav className="navbar">
-            <div className="nav-content">
-              <h1 style={{ cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>🏛️ Relics Reimagined</h1>
-              <div className="nav-right">
-                <span className="user-info">Welcome, {user?.displayName || 'Explorer'}!</span>
-              </div>
-            </div>
-          </nav>
+          <Header 
+            onLogoClick={() => navigate('/dashboard')}
+          >
+            <span className="user-info">Welcome, {user?.displayName || 'Explorer'}!</span>
+          </Header>
 
           <div className="game-content">
             <div className="completion-screen finish">

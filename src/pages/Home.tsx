@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Header from '../components/Header';
 import '../styles/Home.css';
 
 const Home: React.FC = () => {
@@ -9,22 +10,19 @@ const Home: React.FC = () => {
 
   return (
     <div className="home-container">
-      <nav className="navbar">
-        <div className="nav-content">
-          <h1 style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>🏛️ Relics Reimagined</h1>
-          <div className="nav-right">
-            {user ? (
-              <button className="nav-btn" onClick={() => navigate('/dashboard')}>Dashboard</button>
-            ) : (
-              <>
-                <button className="nav-btn" onClick={() => navigate('/login')}>Login</button>
-                <button className="nav-btn primary" onClick={() => navigate('/register')}>Register</button>
-              </>
-            )}
-            <button className="nav-btn" onClick={() => navigate('/admin/setup')}>Setup</button>
-          </div>
-        </div>
-      </nav>
+      <Header 
+        onLogoClick={() => navigate('/')}
+      >
+        {user ? (
+          <button className="nav-btn" onClick={() => navigate('/dashboard')}>Dashboard</button>
+        ) : (
+          <>
+            <button className="nav-btn" onClick={() => navigate('/login')}>Login</button>
+            <button className="nav-btn primary" onClick={() => navigate('/register')}>Register</button>
+          </>
+        )}
+        <button className="nav-btn" onClick={() => navigate('/admin/setup')}>Setup</button>
+      </Header>
 
       <div className="hero-section">
         <div className="hero-content">
@@ -87,7 +85,7 @@ const Home: React.FC = () => {
       </div>
 
       <footer className="footer">
-        <p>&copy; 2024 Relics Reimagined. Explore the past, shape the future.</p>
+        <p>&copy; 2026 Relics Reimagined. Explore the past, shape the future.</p>
       </footer>
     </div>
   );

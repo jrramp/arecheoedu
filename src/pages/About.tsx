@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
 import '../styles/About.css';
 
 const About: React.FC = () => {
@@ -7,12 +8,11 @@ const About: React.FC = () => {
 
   return (
     <div className="about-container">
-      <nav className="navbar">
-        <div className="nav-content">
-          <h1 style={{ cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>🏛️ Relics Reimagined</h1>
-          <button className="back-btn" onClick={() => navigate('/dashboard')}>← Back</button>
-        </div>
-      </nav>
+      <Header 
+        onLogoClick={() => navigate('/dashboard')}
+      >
+        <button className="back-btn" onClick={() => navigate('/dashboard')}>← Back</button>
+      </Header>
 
       <div className="about-content">
         <h2>About Archaeology</h2>

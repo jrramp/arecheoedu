@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Header from '../components/Header';
 import '../styles/Curriculum.css';
 
 interface Slide {
@@ -184,16 +185,13 @@ const Curriculum: React.FC = () => {
 
   return (
     <div className="curriculum-container">
-      <nav className="navbar">
-        <div className="nav-content">
-          <h1 style={{ cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>🏛️ Relics Reimagined</h1>
-          <div className="nav-right">
-            <span className="user-info">Welcome, {user?.displayName || 'Explorer'}! <span style={{ fontSize: '12px', color: '#ddd' }}>({user?.role === 'admin' ? '👨‍💼 Admin' : '👤 Customer'})</span></span>
-            <button className="refresh-btn" onClick={loadPresentations} title="Refresh presentations">🔄</button>
-            <button className="back-btn" onClick={() => navigate('/dashboard')}>← Back</button>
-          </div>
-        </div>
-      </nav>
+      <Header 
+        onLogoClick={() => navigate('/dashboard')}
+      >
+        <span className="user-info">Welcome, {user?.displayName || 'Explorer'}! <span style={{ fontSize: '12px', color: '#ddd' }}>({user?.role === 'admin' ? '👨‍💼 Admin' : '👤 Customer'})</span></span>
+        <button className="refresh-btn" onClick={loadPresentations} title="Refresh presentations">🔄</button>
+        <button className="back-btn" onClick={() => navigate('/dashboard')}>← Back</button>
+      </Header>
 
       <div className="curriculum-content">
         <h2>📚 Curriculum & Learning Materials</h2>
