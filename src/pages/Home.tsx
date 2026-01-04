@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Header from '../components/Header';
@@ -7,6 +7,30 @@ import '../styles/Home.css';
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState(0);
+
+  const features = [
+    {
+      emoji: '🎮',
+      title: 'Interactive Gameplay',
+      description: 'Engage in exciting artifact discovery games with multiple levels and challenges'
+    },
+    {
+      emoji: '📚',
+      title: 'Educational Content',
+      description: 'Learn about archaeology, ancient civilizations, and historical preservation'
+    },
+    {
+      emoji: '🏆',
+      title: 'Competitive Leaderboard',
+      description: 'Compete with other players and track your progress on the global leaderboard'
+    },
+    {
+      emoji: '🌍',
+      title: 'Global Community',
+      description: 'Join a community of archaeology enthusiasts from around the world'
+    }
+  ];
 
   return (
     <div className="home-container">
@@ -50,36 +74,26 @@ const Home: React.FC = () => {
 
       <div className="features-section">
         <h2>What You'll Experience</h2>
-        <div className="features-grid">
-          <div className="feature">
-            <div className="feature-emoji">🎮</div>
-            <h3>Interactive Gameplay</h3>
-            <p>Engage in exciting artifact discovery games with multiple levels and challenges</p>
+        <p className="features-subtitle">Explore interactive features and engaging content designed for archaeology enthusiasts</p>
+        <div className="features-tabs">
+          <div className="tab-buttons">
+            {features.map((feature, index) => (
+              <button
+                key={index}
+                className={`tab-btn ${activeTab === index ? 'active' : ''}`}
+                onClick={() => setActiveTab(index)}
+              >
+                <span className="tab-emoji">{feature.emoji}</span>
+                <span className="tab-label">{feature.title}</span>
+              </button>
+            ))}
           </div>
-          <div className="feature">
-            <div className="feature-emoji">📚</div>
-            <h3>Educational Content</h3>
-            <p>Learn about archaeology, ancient civilizations, and historical preservation</p>
-          </div>
-          <div className="feature">
-            <div className="feature-emoji">🏆</div>
-            <h3>Competitive Leaderboard</h3>
-            <p>Compete with other players and track your progress on the global leaderboard</p>
-          </div>
-          <div className="feature">
-            <div className="feature-emoji">🔒</div>
-            <h3>Secure Authentication</h3>
-            <p>Safe and secure login system to protect your account and game progress</p>
-          </div>
-          <div className="feature">
-            <div className="feature-emoji">🌍</div>
-            <h3>Global Community</h3>
-            <p>Join a community of archaeology enthusiasts from around the world</p>
-          </div>
-          <div className="feature">
-            <div className="feature-emoji">⭐</div>
-            <h3>Rewards System</h3>
-            <p>Earn points, unlock achievements, and progress through multiple difficulty levels</p>
+          <div className="tab-content">
+            <div className="feature-display">
+              <div className="feature-emoji">{features[activeTab].emoji}</div>
+              <h3>{features[activeTab].title}</h3>
+              <p>{features[activeTab].description}</p>
+            </div>
           </div>
         </div>
       </div>
