@@ -60,7 +60,6 @@ const Register: React.FC = () => {
         <h1>🏺 Relics Reimagined</h1>
         <h2>Register</h2>
         <div style={{ fontSize: '12px', color: '#666', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px', marginBottom: '20px' }}>
-          ℹ️ <strong>Demo Mode</strong>: Using test authentication (no Firebase needed)<br/>
           👨‍💼 <strong>Note</strong>: New registrations create customer accounts. Admin accounts must be added manually by administrators.
         </div>
         {error && <div className="error-message">{error}</div>}

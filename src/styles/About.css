@@ -1,7 +1,8 @@
 /* About Styles */
 .about-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #8B7355 0%, #D4A574 50%, #6B5344 100%);
+  background-attachment: fixed;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -19,15 +20,16 @@
 }
 
 .about-section {
-  background: white;
+  background: linear-gradient(135deg, #f9f5f0 0%, #e8ddd0 100%);
   padding: 30px;
   border-radius: 10px;
   margin-bottom: 25px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border-left: 4px solid #8B7355;
 }
 
 .about-section h3 {
-  color: #667eea;
+  color: #6B5344;
   font-size: 22px;
   margin-top: 0;
   margin-bottom: 15px;
@@ -66,11 +68,12 @@
 }
 
 .site-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #8B7355 0%, #A68970 100%);
   color: white;
   padding: 20px;
   border-radius: 8px;
   text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .site-card h4 {
@@ -94,11 +97,11 @@
 }
 
 .feature {
-  background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%);
+  background: linear-gradient(135deg, #f9f5f0 0%, #f1e8df 100%);
   padding: 20px;
   border-radius: 8px;
   text-align: center;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #8B7355;
 }
 
 .feature-emoji {
@@ -107,7 +110,7 @@
 }
 
 .feature h4 {
-  color: #667eea;
+  color: #8B7355;
   margin: 10px 0;
   font-size: 16px;
 }

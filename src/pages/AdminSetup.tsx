@@ -49,10 +49,6 @@ const AdminSetup: React.FC = () => {
       <div className="auth-card">
         <h1>🔧 Admin Setup</h1>
         <h2>Create Default User</h2>
-        <div style={{ margin: '20px 0', padding: '15px', backgroundColor: '#e7f3ff', borderRadius: '5px', color: '#004085', fontSize: '12px' }}>
-          ℹ️ <strong>Demo Mode Active</strong><br />
-          Using mock authentication (no Firebase needed)
-        </div>
 
         <div style={{ margin: '20px 0', padding: '20px', backgroundColor: '#f0f0f0', borderRadius: '5px' }}>
           <h3>Default User Credentials</h3>
@@ -101,12 +97,6 @@ const AdminSetup: React.FC = () => {
             {message}
           </div>
         )}
-
-        <div style={{ marginTop: '30px', fontSize: '12px', color: '#666' }}>
-          <p>
-            <strong>Note:</strong> This is demo mode with mock authentication. No Firebase credentials required!
-          </p>
-        </div>
 
         <div style={{ marginTop: '20px', textAlign: 'center' }}>
           <button className="nav-link-btn" onClick={() => navigate('/')} style={{ background: 'none', border: 'none', color: '#667eea', cursor: 'pointer', textDecoration: 'underline', fontSize: '14px' }}>

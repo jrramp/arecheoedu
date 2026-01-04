@@ -1,7 +1,8 @@
 /* Leaderboard Styles */
 .leaderboard-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #8B7355 0%, #D4A574 50%, #6B5344 100%);
+  background-attachment: fixed;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -26,9 +27,9 @@
 }
 
 .leaderboard-table {
-  background: white;
+  background: linear-gradient(135deg, #f9f5f0 0%, #e8ddd0 100%);
   border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   margin-bottom: 40px;
 }
@@ -38,7 +39,7 @@
   grid-template-columns: 60px 1fr 80px 80px 100px;
   gap: 20px;
   padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #8B7355 0%, #A68970 100%);
   color: white;
   font-weight: 600;
   position: sticky;
@@ -107,14 +108,15 @@
 }
 
 .stats-info {
-  background: white;
+  background: linear-gradient(135deg, #f9f5f0 0%, #e8ddd0 100%);
   padding: 30px;
   border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border-left: 4px solid #8B7355;
 }
 
 .stats-info h3 {
-  color: #667eea;
+  color: #8B7355;
   font-size: 22px;
   margin-top: 0;
 }
@@ -136,7 +138,7 @@
 }
 
 .stats-info strong {
-  color: #667eea;
+  color: #8B7355;
 }
 
 @media (max-width: 768px) {

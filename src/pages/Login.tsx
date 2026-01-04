@@ -46,9 +46,6 @@ const Login: React.FC = () => {
       <div className="auth-card">
         <h1>🏺 Relics Reimagined</h1>
         <h2>Login</h2>
-        <div style={{ fontSize: '12px', color: '#666', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px', marginBottom: '20px' }}>
-          ℹ️ <strong>Demo Mode</strong>: Using test authentication (no Firebase needed)
-        </div>
         {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -77,11 +74,6 @@ const Login: React.FC = () => {
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-        <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#e7f3ff', borderRadius: '5px', fontSize: '12px', color: '#004085' }}>
-          <strong>Test Account:</strong><br />
-          Email: cyber@example.com<br />
-          Password: turtle2025
-        </div>
         <p className="auth-link">
           Don't have an account? <Link to="/register">Register here</Link>
         </p>

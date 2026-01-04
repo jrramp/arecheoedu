@@ -1,6 +1,7 @@
 .curriculum-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  background: linear-gradient(135deg, #8B7355 0%, #D4A574 50%, #6B5344 100%);
+  background-attachment: fixed;
   color: #333;
 }
 
@@ -55,12 +56,12 @@
 }
 
 .upload-section.google-slides-section {
-  background: linear-gradient(135deg, #f0f4f8 0%, #e8f1f7 100%);
-  border: 2px solid #2a5298;
+  background: linear-gradient(135deg, #f9f5f0 0%, #e8ddd0 100%);
+  border: 2px solid #8B7355;
 }
 
 .upload-section h3 {
-  color: #1e3c72;
+  color: #6B5344;
   margin-bottom: 15px;
   font-size: 16px;
 }
@@ -83,8 +84,8 @@
 
 .text-input:focus {
   outline: none;
-  border-color: #2a5298;
-  box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+  border-color: #8B7355;
+  box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.2);
 }
 
 .google-slides-btn {
@@ -97,13 +98,13 @@
   background: #f0f0f0;
   padding: 8px 12px;
   border-radius: 4px;
-  border-left: 3px solid #2a5298;
+  border-left: 3px solid #8B7355;
 }
 
 .file-label {
   display: block;
   background: #f0f0f0;
-  border: 2px dashed #2a5298;
+  border: 2px dashed #8B7355;
   border-radius: 8px;
   padding: 15px;
   text-align: center;
@@ -115,11 +116,11 @@
 
 .file-label:hover {
   background: #e8e8e8;
-  border-color: #1e3c72;
+  border-color: #6B5344;
 }
 
 .upload-btn {
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  background: linear-gradient(135deg, #8B7355 0%, #6B5344 100%);
   color: white;
   border: none;
   padding: 10px 15px;
@@ -131,7 +132,7 @@
 
 .upload-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 21px rgba(30, 60, 114, 0.4);
+  box-shadow: 0 6px 21px rgba(139, 115, 85, 0.4);
 }
 
 .upload-btn:disabled {
@@ -150,7 +151,7 @@
 }
 
 .files-list-section h3 {
-  color: #1e3c72;
+  color: #6B5344;
   margin-bottom: 15px;
   font-size: 16px;
 }
@@ -178,12 +179,12 @@
 
 .file-item:hover {
   background: #f0f0f0;
-  border-color: #2a5298;
+  border-color: #8B7355;
 }
 
 .file-item.active {
-  background: #e3f2fd;
-  border-color: #2a5298;
+  background: #f9f5f0;
+  border-color: #8B7355;
 }
 
 .file-info {
@@ -193,7 +194,7 @@
 
 .file-name {
   font-weight: bold;
-  color: #1e3c72;
+  color: #6B5344;
   font-size: 14px;
   margin-bottom: 4px;
   white-space: nowrap;
@@ -243,7 +244,8 @@
   left: 0 !important;
   width: 100% !important;
   height: 100% !important;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+  background: linear-gradient(135deg, #8B7355 0%, #D4A574 50%, #6B5344 100%) !important;
+  background-attachment: fixed !important;
   border-radius: 0 !important;
   padding: 40px !important;
   z-index: 9999 !important;
@@ -257,7 +259,7 @@
 .slide-viewer.fullscreen .presentation-header {
   position: sticky;
   top: 0;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  background: linear-gradient(135deg, #8B7355 0%, #6B5344 100%);
   padding-bottom: 20px;
   z-index: 10000;
 }
@@ -270,7 +272,7 @@
 }
 
 .presentation-title {
-  color: #1e3c72;
+  color: #6B5344;
   margin: 0;
   font-size: 18px;
   padding-bottom: 15px;
@@ -292,7 +294,7 @@
   cursor: pointer;
   font-size: 24px;
   padding: 5px 15px;
-  color: #1e3c72;
+  color: #6B5344;
   transition: transform 0.2s ease;
   margin-left: 10px;
 }
@@ -357,10 +359,10 @@
 .slide-title {
   font-size: 28px;
   font-weight: bold;
-  color: #1e3c72;
+  color: #6B5344;
   margin-bottom: 20px;
   padding-bottom: 15px;
-  border-bottom: 3px solid #2a5298;
+  border-bottom: 3px solid #8B7355;
 }
 
 .slide-body {
@@ -381,7 +383,7 @@
 }
 
 .nav-btn {
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  background: linear-gradient(135deg, #8B7355 0%, #6B5344 100%);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -393,7 +395,7 @@
 
 .nav-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+  box-shadow: 0 6px 20px rgba(139, 115, 85, 0.4);
 }
 
 .nav-btn:disabled {
