@@ -56,7 +56,7 @@ const Home: React.FC = () => {
           <div className="hero-buttons">
             {user ? (
               <button className="hero-btn primary" onClick={() => navigate('/dashboard')}>
-                Continue to Game →
+                Explore →
               </button>
             ) : (
               <>

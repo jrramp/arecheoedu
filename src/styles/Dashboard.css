@@ -1,8 +1,10 @@
 /* Dashboard Styles */
 .dashboard-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #8B7355 0%, #D4A574 50%, #6B5344 100%);
+  background-attachment: fixed;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
 }
 
 .navbar {
@@ -70,17 +72,24 @@
 .welcome-section {
   text-align: center;
   margin-bottom: 50px;
-  color: #333;
+  color: white;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 40px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .welcome-section h2 {
   font-size: 32px;
   margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .welcome-section p {
   font-size: 18px;
-  color: #666;
+  color: #f0f0f0;
+  line-height: 1.8;
 }
 
 .game-options {
@@ -91,17 +100,18 @@
 }
 
 .option-card {
-  background: white;
+  background: linear-gradient(135deg, #f9f5f0 0%, #e8ddd0 100%);
   padding: 30px;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s, box-shadow 0.3s;
+  border: 1px solid #d4a574;
 }
 
 .option-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
 }
 
 .option-emoji {

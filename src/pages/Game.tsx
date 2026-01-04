@@ -499,30 +499,30 @@ const Game: React.FC = () => {
               <p>Learn archaeology through interactive games and master the key concepts of archaeological preservation</p>
               
               <div className="games-grid">
-                <div className="game-card" onClick={() => setSelectedGame('memory')}>
-                  <div className="game-card-subtitle">Memory Game</div>
-                  <div className="game-icon">🧩</div>
-                  <h3>Artifact Memory Challenge</h3>
-                  <p>Test your memory and learn about ancient artifacts. Match pairs of identical artifacts while discovering fascinating facts about archaeological preservation, site integrity, and historical context.</p>
-                  <ul className="game-features">
-                    <li>🏜️ 3 Progressive Difficulty Levels</li>
-                    <li>📚 Learn facts about 9 different artifacts</li>
-                    <li>⏱️ Timed challenges with scoring</li>
-                    <li>🏆 Compete on the leaderboard</li>
-                  </ul>
-                  <button className="select-game-btn">Play Now →</button>
-                </div>
-
                 <div className="game-card site-integrity" onClick={() => setSelectedGame('siteIntegrity')}>
+                  <h3>Site Integrity Challenge</h3>
                   <div className="game-card-subtitle">Learning Game</div>
                   <div className="game-icon">🏗️</div>
-                  <h3>Site Integrity Challenge</h3>
                   <p>Understand what site integrity means and why it's crucial in archaeology. Site integrity is the preservation and wholeness of an archaeological site. Master excavation practices and environmental factors that protect artifacts.</p>
                   <ul className="game-features">
                     <li>🌍 Learn about environmental preservation</li>
                     <li>🔬 Master excavation protocols</li>
                     <li>⚙️ Expert-level site management</li>
                     <li>📊 Immediate feedback on answers</li>
+                  </ul>
+                  <button className="select-game-btn">Play Now →</button>
+                </div>
+
+                <div className="game-card" onClick={() => setSelectedGame('memory')}>
+                  <h3>Artifact Memory Challenge</h3>
+                  <div className="game-card-subtitle">Memory Game</div>
+                  <div className="game-icon">🧩</div>
+                  <p>Test your memory and learn about ancient artifacts. Match pairs of identical artifacts while discovering fascinating facts about archaeological preservation, site integrity, and historical context.</p>
+                  <ul className="game-features">
+                    <li>🏜️ 3 Progressive Difficulty Levels</li>
+                    <li>📚 Learn facts about 9 different artifacts</li>
+                    <li>⏱️ Timed challenges with scoring</li>
+                    <li>🏆 Compete on the leaderboard</li>
                   </ul>
                   <button className="select-game-btn">Play Now →</button>
                 </div>
@@ -1294,7 +1294,72 @@ const Game: React.FC = () => {
     }
   }
 
-  return null;
+  return (
+    <div className="game-container">
+      <Header 
+        onLogoClick={() => navigate('/dashboard')}
+      >
+        <span className="user-info">Welcome, {user?.displayName || 'Explorer'}!</span>
+        <button className="back-btn" onClick={() => navigate('/dashboard')}>← Back</button>
+      </Header>
+
+      <div className="game-content">
+        <section className="about-section">
+          <h3>🏆 How to Play</h3>
+          <ul>
+            <li><strong>Level Select:</strong> Choose from 3 excavation sites of increasing difficulty</li>
+            <li><strong>Grid Excavation:</strong> Click on grid squares to excavate and reveal artifacts</li>
+            <li><strong>Find Artifacts:</strong> Discover hidden artifacts randomly placed in the dig site</li>
+            <li><strong>Use Hints:</strong> Get 3 hints per level that identify specific artifacts</li>
+            <li><strong>Earn Points:</strong> Common artifacts (10-20pts) to legendary items (100pts)</li>
+            <li><strong>Combo System:</strong> Find consecutive artifacts without digging empty squares for bonus points</li>
+            <li><strong>Rarity Levels:</strong> Common → Uncommon → Rare → Legendary</li>
+            <li><strong>Level Progression:</strong> Complete all 3 sites to become a Master Archaeologist</li>
+            <li><strong>Leaderboard:</strong> Compete with other players and climb the rankings</li>
+          </ul>
+        </section>
+
+        <section className="about-section">
+          <h3>⛏️ Game Features</h3>
+          <div className="features-section">
+            <div className="feature">
+              <div className="feature-emoji">🎮</div>
+              <h4>Multiple Levels</h4>
+              <p>3 unique excavation sites with increasing grid sizes (5x5 → 7x7)</p>
+            </div>
+            <div className="feature">
+              <div className="feature-emoji">🎯</div>
+              <h4>Strategic Gameplay</h4>
+              <p>Choose when to use hints wisely for better strategic play</p>
+            </div>
+            <div className="feature">
+              <div className="feature-emoji">🏅</div>
+              <h4>Rarity System</h4>
+              <p>Collect different artifact rarities for varying rewards</p>
+            </div>
+            <div className="feature">
+              <div className="feature-emoji">⚡</div>
+              <h4>Combo Multiplier</h4>
+              <p>Build combos for bonus points on consecutive discoveries</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="about-section">
+          <h3>ℹ️ About This Game</h3>
+          <p>
+            This interactive Relics Reimagined is designed to introduce players to the exciting world 
+            of archaeological discovery. While simplified, it captures the essence of what archaeologists 
+            do: search for artifacts, analyze findings, and uncover the mysteries of past civilizations.
+          </p>
+          <p>
+            Players at all levels can enjoy this educational game and learn about different historical 
+            periods and the importance of preserving our cultural heritage.
+          </p>
+        </section>
+      </div>
+    </div>
+  );
 };
 
 export default Game;
