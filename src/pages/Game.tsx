@@ -460,7 +460,10 @@ const Game: React.FC = () => {
       integrityChange = -15;
       setScore(Math.max(0, score - 25));
       isCorrect = false;
-      feedbackMessage = chooseCareful ? ((currentChallenge as any).quickAnswer || 'Poor decision') : ((currentChallenge as any).careAnswer || 'Poor decision');
+      // Show the wrong answer feedback based on what they chose
+      feedbackMessage = currentChallenge.type === 'careful' 
+        ? ((currentChallenge as any).quickAnswer || 'Poor decision')
+        : ((currentChallenge as any).careAnswer || 'Poor decision');
     }
     const newIntegrity = Math.max(0, Math.min(100, siteIntegrity + integrityChange));
     setSiteIntegrity(newIntegrity);
@@ -1132,8 +1135,12 @@ const Game: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <button className="continue-btn" onClick={() => setGameState('finished')}>
-                      🎊 Complete All Levels!
+                    <button className="continue-btn" onClick={() => {
+                      updateUserScore(score);
+                      addScoreToLeaderboard(user?.displayName || 'Anonymous', score);
+                      navigate('/leaderboard');
+                    }}>
+                      🏆 View Leaderboard
                     </button>
                   </>
                 )}
