@@ -56,7 +56,7 @@ const ThreatElimination: React.FC<ThreatEliminationProps> = ({ onScoreSubmit, on
       id: 1,
       name: 'Desert Ruins',
       emoji: '🏜️',
-      image: 'linear-gradient(135deg, rgba(232, 213, 196, 0.95) 0%, rgba(210, 180, 140, 0.95) 50%, rgba(196, 165, 123, 0.95) 100%), url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 1200 600%27%3E%3Crect width=%271200%27 height=%27600%27 fill=%27%23E8D5C4%27/%3E%3Crect y=%27350%27 width=%271200%27 height=%27250%27 fill=%27%23DEB887%27/%3E%3Cg fill=%27%23966633%27%3E%3Cpolygon points=%27300,350 400,200 500,350%27/%3E%3Cpolygon points=%27600,350 750,150 900,350%27/%3E%3Cpolygon points=%27150,380 200,300 250,380%27/%3E%3Crect x=%27350%27 y=%27280%27 width=%2760%27 height=%2770%27 fill=%27%23704020%27/%3E%3Crect x=%27750%27 y=%27200%27 width=%2750%27 height=%27150%27 fill=%27%23704020%27/%3E%3C/g%3E%3Cellipse cx=%27100%27 cy=%27100%27 rx=%2750%27 ry=%2760%27 fill=%27%23FFD89B%27 opacity=%270.8%27/%3E%3C/svg%3E")',
+      image: 'url("/desert-ruins.jpg")',
       threatCount: 5,
       timeLimit: 45,
       description: 'Protect ancient desert structures from erosion and looting'
@@ -65,7 +65,7 @@ const ThreatElimination: React.FC<ThreatEliminationProps> = ({ onScoreSubmit, on
       id: 2,
       name: 'Jungle Temple',
       emoji: '🌴',
-      image: 'linear-gradient(135deg, rgba(102, 187, 106, 0.95) 0%, rgba(34, 139, 34, 0.95) 50%, rgba(18, 68, 18, 0.95) 100%), url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 1200 600%27%3E%3Crect width=%271200%27 height=%27600%27 fill=%27%2366BB6A%27/%3E%3Crect y=%27350%27 width=%271200%27 height=%27250%27 fill=%27%231a5c1a%27/%3E%3Cg fill=%27%237cb342%27%3E%3Ccircle cx=%27200%27 cy=%27300%27 r=%2780%27/%3E%3Ccircle cx=%27250%27 cy=%27250%27 r=%2770%27/%3E%3Ccircle cx=%27350%27 cy=%27280%27 r=%2785%27/%3E%3Ccircle cx=%27900%27 cy=%27320%27 r=%2790%27/%3E%3Ccircle cx=%27950%27 cy=%27260%27 r=%2775%27/%3E%3C/g%3E%3Cg fill=%27%23556B2F%27%3E%3Crect x=%27180%27 y=%27380%27 width=%2740%27 height=%27120%27/%3E%3Crect x=%27320%27 y=%27400%27 width=%2735%27 height=%27100%27/%3E%3Crect x=%27880%27 y=%27390%27 width=%2745%27 height=%27110%27/%3E%3C/g%3E%3Cpolygon points=%27500,200 650,400 350,400%27 fill=%27%23704020%27/%3E%3Crect x=%27480%27 y=%27250%27 width=%2740%27 height=%27150%27 fill=%27%23704020%27/%3E%3C/svg%3E")',
+      image: 'url("/jungle-temple.jpg")',
       threatCount: 7,
       timeLimit: 50,
       description: 'Stop threats from damaging hidden jungle archaeological sites'
@@ -74,7 +74,7 @@ const ThreatElimination: React.FC<ThreatEliminationProps> = ({ onScoreSubmit, on
       id: 3,
       name: 'Coastal Cave',
       emoji: '🏖️',
-      image: 'linear-gradient(135deg, rgba(224, 246, 255, 0.95) 0%, rgba(168, 216, 234, 0.95) 50%, rgba(41, 128, 185, 0.95) 100%), url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 1200 600%27%3E%3Crect width=%271200%27 height=%27600%27 fill=%27%23E0F6FF%27/%3E%3Cellipse cx=%27600%27 cy=%27200%27 rx=%27150%27 ry=%27100%27 fill=%27%23FFD89B%27 opacity=%270.7%27/%3E%3Crect y=%27300%27 width=%271200%27 height=%27300%27 fill=%27%235BB3D5%27/%3E%3Cg fill=%27%238B4513%27%3E%3Cpolygon points=%270,300 150,200 300,300%27/%3E%3Cpolygon points=%27300,300 500,180 700,300%27/%3E%3Ccircle cx=%27100%27 cy=%27320%27 r=%2740%27 fill=%27%23704020%27/%3E%3Ccircle cx=%27600%27 cy=%27340%27 r=%2750%27 fill=%27%23704020%27/%3E%3C/g%3E%3Cellipse cx=%27500%27 cy=%27320%27 rx=%27150%27 ry=%27100%27 fill=%27%23A0522D%27 opacity=%270.6%27/%3E%3Cg stroke=%27%23FFFFFF%27 stroke-width=%272%27 fill=%27none%27%3E%3Cpath d=%27M 200 350 Q 220 330 240 350%27/%3E%3Cpath d=%27M 450 370 Q 470 350 490 370%27/%3E%3Cpath d=%27M 900 360 Q 920 340 940 360%27/%3E%3C/g%3E%3C/svg%3E")',
+      image: 'url("/coastal-cave.jpg")',
       threatCount: 9,
       timeLimit: 55,
       description: 'Defend coastal caves from erosion and pollution'
@@ -228,30 +228,7 @@ const ThreatElimination: React.FC<ThreatEliminationProps> = ({ onScoreSubmit, on
         <div className="threat-content">
           <div className="level-selection">
             <h2>🛡️ Threat Elimination Challenge</h2>
-            <button className="instructions-btn" onClick={() => setShowInstructions(!showInstructions)}>
-              📖 How to Play
-            </button>
             <p className="level-subtitle">Protect archaeological sites from various threats within the time limit!</p>
-
-            {showInstructions && (
-              <div className="instructions-box">
-                <h3>How to Play</h3>
-                <ol>
-                  <li>Select a difficulty level and archaeological site</li>
-                  <li>Identify the threats (🎯 Looting, 💨 Erosion, ☠️ Pollution, 🏗️ Construction, ⛈️ Weather)</li>
-                  <li>Click ONLY on threats to eliminate them - avoid artifacts!</li>
-                  <li>Artifacts (golden glow) are valuable discoveries - clicking them costs you -100 points!</li>
-                  <li>Each threat eliminated: +50 points</li>
-                  <li>Eliminate all threats before time runs out</li>
-                  <li>Earn bonus time points for remaining seconds</li>
-                  <li>Complete all 3 levels to maximize your score</li>
-                </ol>
-                <p className="threat-legend">
-                  <strong>Threats (RED borders):</strong> 🎯 Looting | 💨 Erosion | ☠️ Pollution | 🏗️ Construction | ⛈️ Weather<br/>
-                  <strong>Artifacts (GOLD glow):</strong> Don't click! 🏺 Pottery | 🪙 Coins | 📜 Scrolls | ⬜ Tablets | 🗿 Statues
-                </p>
-              </div>
-            )}
 
             <div className="levels-grid">
               {siteLevels.map(level => (
@@ -261,7 +238,7 @@ const ThreatElimination: React.FC<ThreatEliminationProps> = ({ onScoreSubmit, on
                   onClick={() => initializeLevel(level.id)}
                 >
                   <div className="level-emoji">{level.emoji}</div>
-                  <h3>{level.name}</h3>
+                  <h3>Phase 3: Level {level.id} - {level.name}</h3>
                   <p className="level-description">{level.description}</p>
                   <div className="level-stats">
                     <span>⏱️ {level.timeLimit}s</span>
@@ -294,7 +271,7 @@ const ThreatElimination: React.FC<ThreatEliminationProps> = ({ onScoreSubmit, on
           </div>
         </div>
 
-        <div className="game-area" style={{ background: level.image }}>
+        <div className="game-area" style={{ backgroundImage: level.image }}>
           {threats.map(threat => (
             <button
               key={`threat-${threat.id}`}
@@ -392,16 +369,7 @@ const ThreatElimination: React.FC<ThreatEliminationProps> = ({ onScoreSubmit, on
   if (gameState === 'gameOver' && selectedLevel) {
     return (
       <div className="threat-container">
-        {onBack && (
-          <Header onLogoClick={onBack}>
-            <button className="back-btn" onClick={onBack}>← Back</button>
-          </Header>
-        )}
-        {!onBack && (
-          <Header onLogoClick={() => navigate('/dashboard')}>
-            <button className="back-btn" onClick={() => navigate('/dashboard')}>← Back</button>
-          </Header>
-        )}
+
 
         <div className="threat-content">
           <div className="completion-screen">

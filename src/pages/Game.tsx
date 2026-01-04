@@ -381,9 +381,11 @@ const Game: React.FC = () => {
         setSelectedGame('memory');
         setGameState('levelSelect');
         setCurrentLevel(0);
-      } else {
-        // Memory Match game finished - go to combined leaderboard
-        setGameState('finished');
+      } else if (selectedGame === 'memory') {
+        // Memory Match game finished - auto-progress to Threat Elimination game
+        setSelectedGame('threatElimination');
+        setGameState('levelSelect');
+        setCurrentLevel(0);
       }
     }
   };
@@ -602,7 +604,7 @@ const Game: React.FC = () => {
                   📖 How to Play
                 </button>
               </div>
-              <p>Complete both phases sequentially to master archaeology. Your combined score will rank you on the leaderboard!</p>
+              <p>Complete all three phases sequentially to master archaeology. Your combined score from all games will rank you on the leaderboard!</p>
               
               <div className="games-grid">
                 <div className="game-card site-integrity" onClick={() => setSelectedGame('siteIntegrity')}>
@@ -701,7 +703,14 @@ const Game: React.FC = () => {
           ) : selectedGame === 'threatElimination' ? (
             <ThreatElimination 
               onScoreSubmit={(threatScore) => {
-                setGameScores({...gameScores, threatElimination: threatScore});
+                const updatedScores = {...gameScores, threatElimination: threatScore};
+                setGameScores(updatedScores);
+                // Calculate combined score from all three games
+                const combinedScore = updatedScores.memory + updatedScores.siteIntegrity + updatedScores.threatElimination;
+                // Submit combined score to leaderboard
+                if (user?.displayName) {
+                  addScoreToLeaderboard(user.displayName, combinedScore);
+                }
                 setSelectedGame(null);
                 navigate('/leaderboard');
               }}
@@ -768,11 +777,12 @@ const Game: React.FC = () => {
                 
                 <div className="instructions-section">
                   <h3>🎮 Game Overview</h3>
-                  <p>Complete an epic two-game archaeological challenge to earn your place on the leaderboard!</p>
+                  <p>Complete an epic three-game archaeological challenge to earn your place on the leaderboard!</p>
                   <ol>
                     <li><strong>Phase 1 - Site Integrity Challenge:</strong> Make excavation decisions across 3 progressive levels to preserve archaeological sites.</li>
                     <li><strong>Phase 2 - Artifact Memory Challenge:</strong> Test your memory by matching pairs of artifacts across 3 progressive levels.</li>
-                    <li><strong>Final Score:</strong> Your combined score from both games determines your leaderboard ranking!</li>
+                    <li><strong>Phase 3 - Threat Elimination Challenge:</strong> Protect archaeological sites from threats in 3 progressive levels within time limits.</li>
+                    <li><strong>Final Score:</strong> Your combined score from all three games determines your leaderboard ranking!</li>
                   </ol>
                 </div>
 
@@ -798,7 +808,20 @@ const Game: React.FC = () => {
                     <li><strong>Match Artifact Pairs:</strong> Find two identical artifacts. Matched pairs stay flipped!</li>
                     <li><strong>Watch Your Moves:</strong> Each level has a move limit. Use fewer moves = higher score!</li>
                     <li><strong>Learn Artifact Facts:</strong> After matching all pairs, discover fascinating facts about each artifact.</li>
-                    <li><strong>Complete Phase 2:</strong> Finish all 3 levels and automatically proceed to the leaderboard!</li>
+                    <li><strong>Complete Phase 2:</strong> Finish all 3 levels and move to Phase 3!</li>
+                  </ol>
+                </div>
+
+                <div className="instructions-section">
+                  <h3>🛡️ Phase 3: Threat Elimination Challenge - How to Play</h3>
+                  <ol>
+                    <li><strong>Choose Your Starting Level:</strong> Progress through 3 archaeological sites with increasing threat complexity.</li>
+                    <li><strong>Identify Threats:</strong> Click ONLY on threats - 🎯 Looting, 💨 Erosion, ☠️ Pollution, 🏗️ Construction, ⛈️ Weather.</li>
+                    <li><strong>Avoid Artifacts:</strong> Artifact markers show valuable discoveries - clicking them costs -100 points!</li>
+                    <li><strong>Time Pressure:</strong> Each level has 45-55 seconds to eliminate all threats before time runs out.</li>
+                    <li><strong>Earn Points:</strong> Each threat eliminated = +50 points, plus bonus points for remaining time.</li>
+                    <li><strong>Complete All Threats:</strong> Eliminate every threat before the timer ends to progress.</li>
+                    <li><strong>Complete Phase 3:</strong> Finish all 3 levels and submit your combined score to the leaderboard!</li>
                   </ol>
                 </div>
 
@@ -807,9 +830,10 @@ const Game: React.FC = () => {
                   <ul>
                     <li><strong>Phase 1 Score:</strong> Points earned from correct excavation decisions (can exceed 100 points).</li>
                     <li><strong>Phase 2 Score:</strong> Points based on efficient card matching (fewer moves = more points).</li>
+                    <li><strong>Phase 3 Score:</strong> Points from threat elimination (50 per threat + time bonus).</li>
                     <li><strong>Site Integrity Bonus:</strong> Earn bonus points equal to (Site Integrity % × 50). Good preservation = bonus points!</li>
-                    <li><strong>Combined Total:</strong> Phase 1 + Phase 2 + Site Integrity Bonus = Your Final Score</li>
-                    <li><strong>Auto Leaderboard:</strong> After Phase 2 completes, you're automatically placed on the leaderboard ranked by combined score!</li>
+                    <li><strong>Combined Total:</strong> Phase 1 + Phase 2 + Phase 3 + Site Integrity Bonus = Your Final Score</li>
+                    <li><strong>Auto Leaderboard:</strong> After Phase 3 completes, your combined score is automatically submitted to the leaderboard!</li>
                   </ul>
                 </div>
 
@@ -820,7 +844,9 @@ const Game: React.FC = () => {
                     <li>🏗️ <strong>Phase 1:</strong> Maintain high Site Integrity for bonus points on the leaderboard!</li>
                     <li>🧩 <strong>Phase 2:</strong> Remember card positions - better memory = fewer moves = higher score!</li>
                     <li>⚡ <strong>Phase 2:</strong> Work efficiently - the fewer moves you use, the more bonus points you earn!</li>
-                    <li>🎯 <strong>Overall:</strong> Excellence in BOTH games = highest combined score = top leaderboard ranking!</li>
+                    <li>🛡️ <strong>Phase 3:</strong> Focus on threats only - avoid clicking artifacts to keep your score high!</li>
+                    <li>🎯 <strong>Phase 3:</strong> Work quickly but carefully - speed helps your time bonus!</li>
+                    <li>🏆 <strong>Overall:</strong> Excellence in ALL THREE games = highest combined score = top leaderboard ranking!</li>
                   </ul>
                 </div>
 
@@ -1072,7 +1098,10 @@ const Game: React.FC = () => {
                       if (currentLevel < 3) {
                         initializeLevel(currentLevel + 1);
                       } else {
-                        setGameState('finished');
+                        // Finished Site Integrity - auto-progress to Memory Match
+                        setSelectedGame('memory');
+                        setGameState('levelSelect');
+                        setCurrentLevel(0);
                       }
                     }}
                   >
@@ -1188,8 +1217,8 @@ const Game: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <button className="continue-btn" onClick={() => setGameState('finished')}>
-                    🎊 Complete All Levels!
+                  <button className="continue-btn" onClick={nextLevel}>
+                    Continue to Phase 3 →
                   </button>
                 </>
               )}
@@ -1357,21 +1386,16 @@ const Game: React.FC = () => {
                   }}>
                     🔄 Try Again
                   </button>
-                  <button className="dashboard-btn" onClick={() => {
-                    // Save memory game score and calculate combined score with site integrity bonus
+                  <button className="continue-btn" onClick={() => {
+                    // Save memory game score for later phases
                     const memoryGameScore = score;
                     const newGameScores = { ...gameScores, memory: memoryGameScore };
                     setGameScores(newGameScores);
                     
-                    // Calculate combined score: Memory + SiteIntegrity + (SiteIntegrity% × 50)
-                    const integrityBonus = Math.round((siteIntegrity / 100) * 50);
-                    const combinedScore = memoryGameScore + newGameScores.siteIntegrity + integrityBonus;
-                    
-                    updateUserScore(combinedScore);
-                    addScoreToLeaderboard(user?.displayName || 'Anonymous', combinedScore);
-                    navigate('/leaderboard');
+                    // Move to next level
+                    nextLevel();
                   }}>
-                    📊 View Leaderboard
+                    Continue to Level {currentLevel + 1} →
                   </button>
                 </div>
               </>
@@ -1414,29 +1438,41 @@ const Game: React.FC = () => {
                 </div>
 
                 <div className="action-buttons final">
-                  <button className="play-again-btn" onClick={() => {
-                    setGameState('levelSelect');
-                    setScore(0);
-                    setMoves(0);
-                  }}>
-                    🔄 Play Again
-                  </button>
-                  <button className="dashboard-btn" onClick={() => {
-                    // Save memory game score and calculate combined score with site integrity bonus
-                    const memoryGameScore = score;
-                    const newGameScores = { ...gameScores, memory: memoryGameScore };
-                    setGameScores(newGameScores);
-                    
-                    // Calculate combined score: Memory + SiteIntegrity + (SiteIntegrity% × 50)
-                    const integrityBonus = Math.round((siteIntegrity / 100) * 50);
-                    const combinedScore = memoryGameScore + newGameScores.siteIntegrity + integrityBonus;
-                    
-                    updateUserScore(combinedScore);
-                    addScoreToLeaderboard(user?.displayName || 'Anonymous', combinedScore);
-                    navigate('/leaderboard');
-                  }}>
-                    🏆 View Final Leaderboard
-                  </button>
+                  {currentLevel < 3 ? (
+                    <>
+                      <button className="play-again-btn" onClick={() => {
+                        setGameState('levelSelect');
+                        setScore(0);
+                        setMoves(0);
+                      }}>
+                        🔄 Play Again
+                      </button>
+                      <button className="dashboard-btn" onClick={() => {
+                        // Save memory game score for use in later phases
+                        const memoryGameScore = score;
+                        const newGameScores = { ...gameScores, memory: memoryGameScore };
+                        setGameScores(newGameScores);
+                        
+                        setGameState('levelSelect');
+                        setScore(0);
+                        setMoves(0);
+                      }}>
+                        ← Back to Levels
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button className="continue-btn" onClick={() => {
+                        // Save memory game score and proceed to Phase 3
+                        const memoryGameScore = score;
+                        const newGameScores = { ...gameScores, memory: memoryGameScore };
+                        setGameScores(newGameScores);
+                        nextLevel();
+                      }}>
+                        Continue to Phase 3: Threat Elimination →
+                      </button>
+                    </>
+                  )}
                 </div>
               </>
             )}

@@ -53,7 +53,7 @@ const Dashboard: React.FC = () => {
       <div className="dashboard-content">
         <div className="welcome-section">
           <h2>What is Archaeology?</h2>
-          <p>Archaeology is the scientific study of human history and cultures through the investigation of artifacts, structures, and sites. Archaeologists uncover the secrets of ancient civilizations, piece together how people lived thousands of years ago, and preserve the heritage of our world. Every artifact tells a story—from ancient pottery and tools to monumental pyramids and temples. Join us on an adventure to explore the wonders of the past and become an archaeologist yourself!</p>
+          <p>Archaeology is the scientific study of human history and cultures through the investigation of artifacts, structures, and sites. Archaeologists uncover the secrets of ancient civilizations and piece together how people lived thousands of years ago while preserving the heritage of our world. Every artifact has a story to tell, from ancient pottery and tools to massive pyramids and temples. Come with us on an adventure to explore the wonders of the past and discover what it takes to be an archaeologist!</p>
         </div>
 
         <div className="game-options">
