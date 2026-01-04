@@ -35,7 +35,7 @@ interface ThreatEliminationProps {
   onBack?: () => void;
 }
 
-const ThreatElimination: React.FC<ThreatEliminationProps> = ({ onScoreSubmit, onBack }) => {
+const ThreatElimination: React.FC<ThreatEliminationProps> = ({ onScoreSubmit }) => {
   const navigate = useNavigate();
   const { user, addScoreToLeaderboard, updateUserScore } = useAuth();
 
@@ -46,7 +46,6 @@ const ThreatElimination: React.FC<ThreatEliminationProps> = ({ onScoreSubmit, on
   const [threats, setThreats] = useState<Threat[]>([]);
   const [artifacts, setArtifacts] = useState<Artifact[]>([]);
   const [eliminatedCount, setEliminatedCount] = useState(0);
-  const [showInstructions, setShowInstructions] = useState(false);
   const [completedLevels, setCompletedLevels] = useState<number[]>([]);
   const [nextItemId, setNextItemId] = useState(0);
   const [totalThreatsToSpawn, setTotalThreatsToSpawn] = useState(0);
@@ -61,7 +60,7 @@ const ThreatElimination: React.FC<ThreatEliminationProps> = ({ onScoreSubmit, on
       timeLimit: 45,
       description: 'Protect ancient desert structures from erosion and looting'
     },
-    
+
     {
       id: 2,
       name: 'Jungle Temple',
