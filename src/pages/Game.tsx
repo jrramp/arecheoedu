@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import '../styles/Game.css';
 import '../styles/Game-lesson-styles.css';
 import '../styles/Game-scenario.css';
+import ThreatElimination from './ThreatElimination';
 
 interface ArtifactData {
   id: number;
@@ -177,7 +178,7 @@ const Game: React.FC = () => {
   const [currentLevel, setCurrentLevel] = useState<number>(0);
   const [matchedArtifact, setMatchedArtifact] = useState<ArtifactData | null>(null);
   const [showFacts, setShowFacts] = useState(false);
-  const [selectedGame, setSelectedGame] = useState<'memory' | 'siteIntegrity' | null>(null);
+  const [selectedGame, setSelectedGame] = useState<'memory' | 'siteIntegrity' | 'threatElimination' | null>(null);
   const [showInstructions, setShowInstructions] = useState(false);
 
   // Excavation game state
@@ -186,7 +187,7 @@ const Game: React.FC = () => {
   const [currentChallenge, setCurrentChallenge] = useState<any | null>(null);
 
   // Combined game scoring
-  const [gameScores, setGameScores] = useState<{ memory: number; siteIntegrity: number }>({ memory: 0, siteIntegrity: 0 });
+  const [gameScores, setGameScores] = useState<{ memory: number; siteIntegrity: number; threatElimination: number }>({ memory: 0, siteIntegrity: 0, threatElimination: 0 });
 
   // Site Integrity Questions Database (deprecated - using excavation game instead)
 
@@ -631,6 +632,20 @@ const Game: React.FC = () => {
                   </ul>
                   <button className="select-game-btn">Play Now →</button>
                 </div>
+
+                <div className="game-card" onClick={() => setSelectedGame('threatElimination')}>
+                  <h3>Phase 3: Threat Elimination Challenge</h3>
+                  <div className="game-card-subtitle">Rapid Response Game</div>
+                  <div className="game-icon">🛡️</div>
+                  <p>Protect archaeological sites from environmental and human threats! Eliminate dangers while carefully preserving valuable artifacts. Race against time in this action-packed defense game.</p>
+                  <ul className="game-features">
+                    <li>🎯 3 Progressive difficulty levels (45-55 seconds)</li>
+                    <li>⚠️ 5 threat types to identify and eliminate</li>
+                    <li>🏺 Avoid clicking valuable artifacts (-100 penalty!)</li>
+                    <li>⚡ Fast-paced reaction gameplay</li>
+                  </ul>
+                  <button className="select-game-btn">Play Now →</button>
+                </div>
               </div>
             </div>
           ) : selectedGame === 'memory' ? (
@@ -683,6 +698,15 @@ const Game: React.FC = () => {
                 ← Back to Game Selection
               </button>
             </div>
+          ) : selectedGame === 'threatElimination' ? (
+            <ThreatElimination 
+              onScoreSubmit={(threatScore) => {
+                setGameScores({...gameScores, threatElimination: threatScore});
+                setSelectedGame(null);
+                navigate('/leaderboard');
+              }}
+              onBack={() => setSelectedGame(null)}
+            />
           ) : (
             <div className="level-select">
               <h2>🏗️ Site Integrity Challenge</h2>

@@ -94,7 +94,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           <div className="option-card">
-            <div className="option-emoji">📊</div>
+            <div className="option-emoji"></div>
             <h3>Leaderboard</h3>
             <p>See how you compare with other archaeologists.</p>
             <button 
