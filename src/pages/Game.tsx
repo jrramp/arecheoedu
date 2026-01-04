@@ -876,6 +876,8 @@ const Game: React.FC = () => {
               <h1>🎮 Memory Match - Level {currentLevel}</h1>
               <div className="nav-right">
                 <span className="user-info">Score: {score} | Moves: {moves}</span>
+                <button className="back-btn" onClick={() => setGameState('levelSelect')}>← Levels</button>
+                <button className="back-btn" onClick={() => navigate('/dashboard')}>← Dashboard</button>
               </div>
             </div>
           </nav>

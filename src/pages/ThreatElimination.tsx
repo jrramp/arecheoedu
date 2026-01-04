@@ -61,6 +61,7 @@ const ThreatElimination: React.FC<ThreatEliminationProps> = ({ onScoreSubmit, on
       timeLimit: 45,
       description: 'Protect ancient desert structures from erosion and looting'
     },
+    
     {
       id: 2,
       name: 'Jungle Temple',
