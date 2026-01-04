@@ -847,7 +847,7 @@ const Game: React.FC = () => {
                 <div className="game-header">
                   <h2>Preserve the Site Integrity</h2>
                   <div className="site-integrity-definition">
-                    <p><strong>What is Site Integrity?</strong> It means keeping an archaeological dig site whole, safe, and undamaged - just like how you'd carefully protect something important that you want to keep forever!</p>
+                    <p><strong>What is Site Integrity?</strong> Site integrity is the wholeness, preservation, and condition of a site. It's how artifacts and resources remain how they are to enhance study and knowledge</p>
                   </div>
                   <div className="game-stats">
                     <div className="stat-box">
