@@ -207,7 +207,7 @@
 .game-area {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 4 / 3;
   border-radius: 12px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
   margin-top: 30px;
@@ -218,6 +218,9 @@
   background-position: center;
   background-repeat: no-repeat;
   image-rendering: high-quality;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .threat-marker {
