@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import Header from '../components/Header';
 import '../styles/Game.css';
 import '../styles/Game-lesson-styles.css';
+import '../styles/Game-scenario.css';
 
 interface ArtifactData {
   id: number;
@@ -180,10 +181,12 @@ const Game: React.FC = () => {
   const [showInstructions, setShowInstructions] = useState(false);
 
   // Excavation game state
-  const [excavationGrid, setExcavationGrid] = useState<boolean[]>([]);
   const [siteIntegrity, setSiteIntegrity] = useState<number>(100);
   const [excavatedCount, setExcavatedCount] = useState<number>(0);
-  const [currentChallenge, setCurrentChallenge] = useState<{ id: number; type: string; description: string } | null>(null);
+  const [currentChallenge, setCurrentChallenge] = useState<any | null>(null);
+
+  // Combined game scoring
+  const [gameScores, setGameScores] = useState<{ memory: number; siteIntegrity: number }>({ memory: 0, siteIntegrity: 0 });
 
   // Site Integrity Questions Database (deprecated - using excavation game instead)
 
@@ -372,102 +375,201 @@ const Game: React.FC = () => {
     if (currentLevel < 3) {
       initializeLevel(currentLevel + 1);
     } else {
-      setGameState('finished');
+      // Site Integrity game finished - auto-progress to Memory Match game
+      if (selectedGame === 'siteIntegrity') {
+        setSelectedGame('memory');
+        setGameState('levelSelect');
+        setCurrentLevel(0);
+      } else {
+        // Memory Match game finished - go to combined leaderboard
+        setGameState('finished');
+      }
     }
   };
 
-  // Excavation game functions with educational content
-  const excavationChallenges = [
-    { 
-      id: 1, 
-      type: 'careful', 
-      description: '⚠️ Fragile artifact detected! Excavate carefully?',
-      lesson: "Site integrity means keeping the dig site whole and safe. Delicate things like pottery need to be dug up slowly and gently, like how you'd carefully unwrap a gift!",
-      careAnswer: 'Excellent! Your careful digging kept the artifact safe and whole.',
-      quickAnswer: 'Oops! Your digging was too rough and broke the artifact.'
+  // Interactive Excavation Scenarios organized by level
+  // Level 1: Basic scenarios (easier, focus on artifact preservation)
+  const level1Scenarios = [
+    {
+      id: 1,
+      artifact: '🏺',
+      name: 'Ancient Pottery',
+      description: 'Delicate ceramic vessel found at layer 3',
+      correctApproach: 'careful',
+      carefulResult: { points: 100, integrity: 15, message: '✅ Pottery intact! Preserved in perfect condition.' },
+      quickResult: { points: 0, integrity: -30, message: '💔 Pottery shattered from rough handling!' }
     },
-    { 
-      id: 2, 
-      type: 'careful', 
-      description: '🏺 Ancient pottery layer. Document before removal?',
-      lesson: 'Before you move something, write it down and take pictures! This helps us understand how ancient people lived and organized their things.',
-      careAnswer: 'Perfect! Your notes show how people arranged things a long time ago.',
-      quickAnswer: "Oh no! Without notes, we lost clues about how ancient people lived."
+    {
+      id: 2,
+      artifact: '🪨',
+      name: 'Loose Rubble Layer',
+      description: 'Sterile rock and soil with no artifacts',
+      correctApproach: 'quick',
+      carefulResult: { points: 30, integrity: 5, message: '✓ Removed carefully, but wasted time.' },
+      quickResult: { points: 80, integrity: 10, message: '✅ Efficiently cleared sterile layer!' }
     },
-    { 
-      id: 3, 
-      type: 'quick', 
-      description: '⚡ Clear loose soil quickly?',
-      lesson: 'Sometimes soil has no special artifacts in it. You can move this quickly to find the interesting stuff faster!',
-      careAnswer: "Slow. While careful, you're spending too much time on empty soil.",
-      quickAnswer: 'Great job! You cleared the unimportant soil and found the real treasures faster!'
-    },
-    { 
-      id: 4, 
-      type: 'careful', 
-      description: '📜 Organic remains found. Preserve context?',
-      lesson: 'Bones, wood, and seeds tell us what people ate and where they lived. We need to handle them extra carefully to keep them whole and safe.',
-      careAnswer: 'Excellent! Your careful work saved important clues about ancient diets and homes.',
-      quickAnswer: 'Uh-oh! Rough handling destroyed clues about what ancient people ate.'
-    },
-    { 
-      id: 5, 
-      type: 'careful', 
-      description: '🦴 Bone layer discovered. Sample preservation?',
-      lesson: "Bones are like history books! Scientists can learn about ancient people from bones if we keep them safe and clean.",
-      careAnswer: "Great! Your careful excavation kept the bones clean for scientists to study.",
-      quickAnswer: "Oops! Careless digging damaged the bones so scientists can't study them anymore."
+    {
+      id: 3,
+      artifact: '💧',
+      name: 'Clay Layer',
+      description: 'Unmarked clay foundation layer',
+      correctApproach: 'careful',
+      carefulResult: { points: 90, integrity: 14, message: '✅ Clay preserved - ready for analysis!' },
+      quickResult: { points: 20, integrity: -25, message: '💔 Careless handling damaged the layer!' }
     }
   ];
 
+  // Level 2: Intermediate scenarios (more challenging, mixed preservation needs)
+  const level2Scenarios = [
+    {
+      id: 1,
+      artifact: '🦴',
+      name: 'Human Remains',
+      description: 'Skeletal remains in fragile condition',
+      correctApproach: 'careful',
+      carefulResult: { points: 120, integrity: 20, message: '✅ Bones preserved for DNA analysis!' },
+      quickResult: { points: 10, integrity: -40, message: '💔 Rough handling destroyed bone structure!' }
+    },
+    {
+      id: 2,
+      artifact: '⚙️',
+      name: 'Bulk Stone Removal',
+      description: 'Large stones blocking deeper access',
+      correctApproach: 'quick',
+      carefulResult: { points: 40, integrity: 5, message: '✓ Too slow for blocked stones.' },
+      quickResult: { points: 110, integrity: 12, message: '✅ Efficiently cleared obstruction!' }
+    },
+    {
+      id: 3,
+      artifact: '🌾',
+      name: 'Seed Deposit',
+      description: 'Ancient carbonized seeds in soil',
+      correctApproach: 'careful',
+      carefulResult: { points: 95, integrity: 18, message: '✅ Seeds preserved for plant analysis!' },
+      quickResult: { points: 5, integrity: -35, message: '💔 Careless digging destroyed seeds!' }
+    },
+    {
+      id: 4,
+      artifact: '🪣',
+      name: 'Loose Surface Debris',
+      description: 'Modern trash and displaced soil',
+      correctApproach: 'quick',
+      carefulResult: { points: 25, integrity: 3, message: '✓ Careful but unnecessary for debris.' },
+      quickResult: { points: 75, integrity: 8, message: '✅ Quickly removed contamination!' }
+    }
+  ];
+
+  // Level 3: Advanced scenarios (complex decisions, expert challenges)
+  const level3Scenarios = [
+    {
+      id: 1,
+      artifact: '📜',
+      name: 'Organic Fibers',
+      description: 'Ancient textile fragments (extremely delicate)',
+      correctApproach: 'careful',
+      carefulResult: { points: 140, integrity: 25, message: '✅ Fibers intact - reveals weaving techniques!' },
+      quickResult: { points: 0, integrity: -50, message: '💔 Fibers disintegrated completely!' }
+    },
+    {
+      id: 2,
+      artifact: '🏔️',
+      name: 'Heavy Clay Block',
+      description: 'Large compacted clay without artifacts',
+      correctApproach: 'quick',
+      carefulResult: { points: 35, integrity: 4, message: '✓ Overcautious for sterile clay.' },
+      quickResult: { points: 120, integrity: 15, message: '✅ Expert efficiency on dense layer!' }
+    },
+    {
+      id: 3,
+      artifact: '💍',
+      name: 'Metal Artifact in Soil',
+      description: 'Oxidized metal piece requiring careful exposure',
+      correctApproach: 'careful',
+      carefulResult: { points: 130, integrity: 22, message: '✅ Patina preserved for dating analysis!' },
+      quickResult: { points: 20, integrity: -28, message: '⚠️ Artifact scratched, reduced dating accuracy.' }
+    },
+    {
+      id: 4,
+      artifact: '🔍',
+      name: 'Complex Context Layer',
+      description: 'Mixed artifacts and sediment requiring documentation',
+      correctApproach: 'careful',
+      carefulResult: { points: 135, integrity: 21, message: '✅ Perfect documentation - reveals settlement patterns!' },
+      quickResult: { points: 30, integrity: -38, message: '💔 Lost critical context information!' }
+    },
+    {
+      id: 5,
+      artifact: '⚡',
+      name: 'Intrusive Root System',
+      description: 'Modern roots penetrating ancient layers',
+      correctApproach: 'quick',
+      carefulResult: { points: 40, integrity: 5, message: '✓ Excessive care for non-cultural material.' },
+      quickResult: { points: 100, integrity: 14, message: '✅ Expertly removed contamination!' }
+    },
+    {
+      id: 6,
+      artifact: '🎯',
+      name: 'Artifact Cluster',
+      description: 'Multiple items in close association',
+      correctApproach: 'careful',
+      carefulResult: { points: 145, integrity: 26, message: '✅ Perfect preservation - reveals trade networks!' },
+      quickResult: { points: 15, integrity: -42, message: '💔 Lost relationships between artifacts!' }
+    }
+  ];
+
+  // Get scenarios based on current level
+  const getScenariosByLevel = () => {
+    switch(currentLevel) {
+      case 1: return level1Scenarios;
+      case 2: return level2Scenarios;
+      case 3: return level3Scenarios;
+      default: return level1Scenarios;
+    }
+  };
+
+  const excavationScenarios = getScenariosByLevel();
+
   const initializeExcavationGame = () => {
-    const gridSize = currentLevel === 1 ? 12 : currentLevel === 2 ? 16 : 20;
-    setExcavationGrid(new Array(gridSize).fill(false));
     setSiteIntegrity(100);
     setExcavatedCount(0);
     setCurrentChallenge(null);
+    // Start with first scenario for this level
+    const scenarios = getScenariosByLevel();
+    setCurrentChallenge(scenarios[0]);
   };
 
-  const handleExcavate = (index: number) => {
-    if (excavationGrid[index]) return;
-    const newGrid = [...excavationGrid];
-    newGrid[index] = true;
-    setExcavationGrid(newGrid);
-    setExcavatedCount(excavatedCount + 1);
-    if (Math.random() < 0.4 && currentChallenge === null) {
-      const randomChallenge = excavationChallenges[Math.floor(Math.random() * excavationChallenges.length)];
-      setCurrentChallenge(randomChallenge);
-    }
-  };
-
-  const handleChallengeResponse = (chooseCareful: boolean) => {
+  const handleExcavate = (chooseCareful: boolean) => {
     if (!currentChallenge) return;
-    let integrityChange = 0;
-    let isCorrect = false;
-    let feedbackMessage = '';
+
+    const scenario = currentChallenge as any;
+    const result = chooseCareful ? scenario.carefulResult : scenario.quickResult;
     
-    if (currentChallenge.type === 'careful' && chooseCareful) {
-      integrityChange = 10;
-      setScore(score + 100);
-      isCorrect = true;
-      feedbackMessage = (currentChallenge as any).careAnswer || 'Good decision!';
-    } else if (currentChallenge.type === 'quick' && !chooseCareful) {
-      integrityChange = 10;
-      setScore(score + 100);
-      isCorrect = true;
-      feedbackMessage = (currentChallenge as any).quickAnswer || 'Efficient choice!';
-    } else {
-      integrityChange = -15;
-      setScore(Math.max(0, score - 25));
-      isCorrect = false;
-      // Show the wrong answer feedback based on what they chose
-      feedbackMessage = currentChallenge.type === 'careful' 
-        ? ((currentChallenge as any).quickAnswer || 'Poor decision')
-        : ((currentChallenge as any).careAnswer || 'Poor decision');
-    }
-    const newIntegrity = Math.max(0, Math.min(100, siteIntegrity + integrityChange));
+    // Check if this was the correct approach for this scenario
+    const isCorrectApproach = (chooseCareful && scenario.correctApproach === 'careful') || 
+                              (!chooseCareful && scenario.correctApproach === 'quick');
+    
+    // Update site integrity immediately
+    const newIntegrity = Math.max(0, Math.min(100, siteIntegrity + result.integrity));
     setSiteIntegrity(newIntegrity);
-    setCurrentChallenge({ ...(currentChallenge as any), feedback: feedbackMessage, isCorrect });
+    setScore(score + result.points);
+    setExcavatedCount(excavatedCount + 1);
+
+    // Show feedback with immediate visual consequence
+    setCurrentChallenge({
+      ...scenario,
+      feedback: result.message,
+      isCorrect: isCorrectApproach,
+      integrityChange: result.integrity
+    });
+
+    // Move to next scenario after 2 seconds
+    setTimeout(() => {
+      if (excavatedCount + 1 < excavationScenarios.length) {
+        const nextIndex = (excavatedCount + 1) % excavationScenarios.length;
+        setCurrentChallenge(excavationScenarios[nextIndex]);
+      }
+      // Level complete is handled by excavatedCount >= length check in render
+    }, 2000);
   };
 
   const getRarityColor = (rarity: string) => {
@@ -494,38 +596,38 @@ const Game: React.FC = () => {
           {selectedGame === null ? (
             <div className="game-selection">
               <div className="selection-header">
-                <h2>🎮 Choose Your Archaeological Adventure</h2>
+                <h2>🎮 Archaeological Challenge</h2>
                 <button className="instructions-btn" onClick={() => setShowInstructions(true)}>
                   📖 How to Play
                 </button>
               </div>
-              <p>Learn archaeology through interactive games and master the key concepts of archaeological preservation</p>
+              <p>Complete both phases sequentially to master archaeology. Your combined score will rank you on the leaderboard!</p>
               
               <div className="games-grid">
                 <div className="game-card site-integrity" onClick={() => setSelectedGame('siteIntegrity')}>
-                  <h3>Site Integrity Challenge</h3>
-                  <div className="game-card-subtitle">Learning Game</div>
+                  <h3>Phase 1: Site Integrity Challenge</h3>
+                  <div className="game-card-subtitle">Excavation Decision Game</div>
                   <div className="game-icon">🏗️</div>
-                  <p>Understand what site integrity means and why it's crucial in archaeology. Site integrity is the preservation and wholeness of an archaeological site. Master excavation practices and environmental factors that protect artifacts.</p>
+                  <p>Make critical excavation decisions to preserve archaeological sites. Learn why site integrity matters and master the protocols that protect irreplaceable artifacts and historical information.</p>
                   <ul className="game-features">
-                    <li>🌍 Learn about environmental preservation</li>
-                    <li>🔬 Master excavation protocols</li>
-                    <li>⚙️ Expert-level site management</li>
-                    <li>📊 Immediate feedback on answers</li>
+                    <li>🎯 3 Progressive difficulty levels</li>
+                    <li>💪 Make careful vs quick excavation choices</li>
+                    <li>🌍 Learn preservation best practices</li>
+                    <li>📈 Earn points + Site Integrity Bonus</li>
                   </ul>
-                  <button className="select-game-btn">Play Now →</button>
+                  <button className="select-game-btn">Start Phase 1 →</button>
                 </div>
 
                 <div className="game-card" onClick={() => setSelectedGame('memory')}>
-                  <h3>Artifact Memory Challenge</h3>
-                  <div className="game-card-subtitle">Memory Game</div>
+                  <h3>Phase 2: Artifact Memory Challenge</h3>
+                  <div className="game-card-subtitle">Memory Matching Game</div>
                   <div className="game-icon">🧩</div>
-                  <p>Test your memory and learn about ancient artifacts. Match pairs of identical artifacts while discovering fascinating facts about archaeological preservation, site integrity, and historical context.</p>
+                  <p>Test your archaeological knowledge! Match pairs of artifacts while learning fascinating facts about ancient civilizations, preservation techniques, and the importance of site integrity.</p>
                   <ul className="game-features">
-                    <li>🏜️ 3 Progressive Difficulty Levels</li>
+                    <li>🎯 3 Progressive difficulty levels (6-12 cards)</li>
                     <li>📚 Learn facts about 9 different artifacts</li>
-                    <li>⏱️ Timed challenges with scoring</li>
-                    <li>🏆 Compete on the leaderboard</li>
+                    <li>⚡ Efficient matching = higher score</li>
+                    <li>🏆 Combined scores rank on leaderboard</li>
                   </ul>
                   <button className="select-game-btn">Play Now →</button>
                 </div>
@@ -641,57 +743,60 @@ const Game: React.FC = () => {
                 <h2>📖 How to Play</h2>
                 
                 <div className="instructions-section">
-                  <h3>🎮 Game Selection</h3>
-                  <p>Choose between two exciting archaeological games:</p>
-                  <ul>
-                    <li><strong>Artifact Memory Challenge:</strong> Test your memory by matching pairs of artifacts and learning fascinating facts about ancient civilizations.</li>
-                    <li><strong>Site Integrity Challenge:</strong> Make excavation decisions that test your understanding of archaeological preservation and site integrity.</li>
-                  </ul>
-                </div>
-
-                <div className="instructions-section">
-                  <h3>🧩 Artifact Memory Challenge - How to Play</h3>
+                  <h3>🎮 Game Overview</h3>
+                  <p>Complete an epic two-game archaeological challenge to earn your place on the leaderboard!</p>
                   <ol>
-                    <li><strong>Choose a Level:</strong> Start with Level 1 (Novice) for 6 cards, Level 2 (Expert) for 8 cards, or Level 3 (Master) for 10 cards.</li>
-                    <li><strong>Click to Flip:</strong> Click on cards to flip them over and reveal the artifacts.</li>
-                    <li><strong>Match Pairs:</strong> Find two identical artifacts. When you match a pair, they stay flipped!</li>
-                    <li><strong>Learn Facts:</strong> After matching all pairs, you'll see fascinating facts about each artifact.</li>
-                    <li><strong>Watch Your Moves:</strong> You have a limited number of moves. Use them wisely! More efficient matching = higher score!</li>
-                    <li><strong>Progress to Next Level:</strong> Complete all 3 levels to become a Master Archaeologist!</li>
+                    <li><strong>Phase 1 - Site Integrity Challenge:</strong> Make excavation decisions across 3 progressive levels to preserve archaeological sites.</li>
+                    <li><strong>Phase 2 - Artifact Memory Challenge:</strong> Test your memory by matching pairs of artifacts across 3 progressive levels.</li>
+                    <li><strong>Final Score:</strong> Your combined score from both games determines your leaderboard ranking!</li>
                   </ol>
                 </div>
 
                 <div className="instructions-section">
-                  <h3>🏗️ Site Integrity Challenge - How to Play</h3>
+                  <h3>🏗️ Phase 1: Site Integrity Challenge - How to Play</h3>
                   <ol>
-                    <li><strong>Choose a Level:</strong> Progress through 3 levels with increasing complexity.</li>
-                    <li><strong>Excavate the Site:</strong> Click on grid squares to excavate them.</li>
-                    <li><strong>Answer Challenges:</strong> When you uncover a challenge, decide whether to excavate CAREFULLY (slow, preserves artifacts) or QUICKLY (fast but risky).</li>
-                    <li><strong>Understand Site Integrity:</strong> Site Integrity is the preservation and wholeness of an archaeological site. Keep your Site Integrity score high!</li>
-                    <li><strong>Careful = Green:</strong> Making the right careful excavation choices adds to your Site Integrity (green status = 70%+).</li>
-                    <li><strong>Risky = Red:</strong> Making quick, careless decisions reduces your Site Integrity (red status = below 40%).</li>
-                    <li><strong>Complete the Challenge:</strong> Finish all 3 levels to become an Excavation Expert!</li>
+                    <li><strong>Choose Your Starting Level:</strong> Progress through 3 levels with increasing complexity.</li>
+                    <li><strong>Make Excavation Decisions:</strong> For each artifact, choose between CAREFUL (slow, preserves site) or QUICK (fast but risky).</li>
+                    <li><strong>Earn Points:</strong> Each correct decision earns points toward your game score.</li>
+                    <li><strong>Monitor Site Health:</strong> Site Integrity % shows how well you're preserving the archaeological site (0-100%).</li>
+                    <li><strong>Green = Good:</strong> Site Integrity 70%+ means excellent preservation (green text).</li>
+                    <li><strong>Yellow = Caution:</strong> Site Integrity 40-69% means moderate damage (yellow text).</li>
+                    <li><strong>Red = Danger:</strong> Site Integrity below 40% means severe damage (red text).</li>
+                    <li><strong>Complete Phase 1:</strong> Finish all 3 levels, then automatically progress to Phase 2!</li>
                   </ol>
                 </div>
 
                 <div className="instructions-section">
-                  <h3>🏆 Scoring & Leaderboard</h3>
+                  <h3>🧩 Phase 2: Artifact Memory Challenge - How to Play</h3>
+                  <ol>
+                    <li><strong>Choose Your Starting Level:</strong> Level 1 (6 cards, 3 pairs) → Level 2 (8 cards, 4 pairs) → Level 3 (12 cards, 6 pairs).</li>
+                    <li><strong>Click to Flip Cards:</strong> Click on cards to reveal the artifacts underneath.</li>
+                    <li><strong>Match Artifact Pairs:</strong> Find two identical artifacts. Matched pairs stay flipped!</li>
+                    <li><strong>Watch Your Moves:</strong> Each level has a move limit. Use fewer moves = higher score!</li>
+                    <li><strong>Learn Artifact Facts:</strong> After matching all pairs, discover fascinating facts about each artifact.</li>
+                    <li><strong>Complete Phase 2:</strong> Finish all 3 levels and automatically proceed to the leaderboard!</li>
+                  </ol>
+                </div>
+
+                <div className="instructions-section">
+                  <h3>🏆 Combined Scoring & Leaderboard</h3>
                   <ul>
-                    <li><strong>Memory Game Scoring:</strong> Earn points based on moves used and time taken. More efficient = higher score!</li>
-                    <li><strong>Site Integrity Scoring:</strong> Earn points for correct excavation decisions and maintaining high site integrity.</li>
-                    <li><strong>Complete All Levels:</strong> Finish all 3 levels in a game to earn bonus points and compete on the leaderboard!</li>
-                    <li><strong>View Leaderboard:</strong> After completing a game, check the leaderboard to see how you rank!</li>
+                    <li><strong>Phase 1 Score:</strong> Points earned from correct excavation decisions (can exceed 100 points).</li>
+                    <li><strong>Phase 2 Score:</strong> Points based on efficient card matching (fewer moves = more points).</li>
+                    <li><strong>Site Integrity Bonus:</strong> Earn bonus points equal to (Site Integrity % × 50). Good preservation = bonus points!</li>
+                    <li><strong>Combined Total:</strong> Phase 1 + Phase 2 + Site Integrity Bonus = Your Final Score</li>
+                    <li><strong>Auto Leaderboard:</strong> After Phase 2 completes, you're automatically placed on the leaderboard ranked by combined score!</li>
                   </ul>
                 </div>
 
                 <div className="instructions-section">
                   <h3>💡 Tips for Success</h3>
                   <ul>
-                    <li>📚 <strong>Memory Game:</strong> Remember the positions of cards! Try to notice patterns and recall what you've seen.</li>
-                    <li>⚡ <strong>Memory Game:</strong> Work quickly but carefully - speed AND accuracy earn bonuses!</li>
-                    <li>🏗️ <strong>Site Integrity:</strong> Think about each choice carefully - rushing damages irreplaceable artifacts!</li>
-                    <li>📖 <strong>Site Integrity:</strong> Read the lesson for each challenge to understand WHY careful choices matter.</li>
-                    <li>🎯 <strong>Both Games:</strong> Higher accuracy = higher score = better leaderboard ranking!</li>
+                    <li>🏗️ <strong>Phase 1:</strong> Read each challenge carefully - understand WHY certain choices damage the site!</li>
+                    <li>🏗️ <strong>Phase 1:</strong> Maintain high Site Integrity for bonus points on the leaderboard!</li>
+                    <li>🧩 <strong>Phase 2:</strong> Remember card positions - better memory = fewer moves = higher score!</li>
+                    <li>⚡ <strong>Phase 2:</strong> Work efficiently - the fewer moves you use, the more bonus points you earn!</li>
+                    <li>🎯 <strong>Overall:</strong> Excellence in BOTH games = highest combined score = top leaderboard ranking!</li>
                   </ul>
                 </div>
 
@@ -824,17 +929,16 @@ const Game: React.FC = () => {
       );
     }
 
-    // Site Integrity Game (Excavation Challenge)
+    // Site Integrity Game (Interactive Excavation Simulator)
     if (selectedGame === 'siteIntegrity') {
-      const totalSpots = excavationGrid.length;
-      const gridCols = currentLevel === 1 ? 3 : currentLevel === 2 ? 4 : 5;
-      const progressPercentage = totalSpots > 0 ? (excavatedCount / totalSpots) * 100 : 0;
+      const totalScenarios = excavationScenarios.length;
+      const progressPercentage = totalScenarios > 0 ? (excavatedCount / totalScenarios) * 100 : 0;
 
       return (
         <div className="game-container">
           <nav className="navbar">
             <div className="nav-content">
-              <h1>🏗️ Excavation Challenge - Level {currentLevel}</h1>
+              <h1>🏗️ Excavation Simulator - Level {currentLevel}</h1>
               <div className="nav-right">
                 <span className="user-info">Welcome, {user?.displayName || 'Explorer'}!</span>
               </div>
@@ -845,13 +949,13 @@ const Game: React.FC = () => {
             <div className="match-game">
               <div className="excavation-game">
                 <div className="game-header">
-                  <h2>Preserve the Site Integrity</h2>
+                  <h2>🏺 Interactive Excavation Site Manager</h2>
                   <div className="site-integrity-definition">
                     <p><strong>What is Site Integrity?</strong> Site integrity is the wholeness, preservation, and condition of a site. It's how artifacts and resources remain how they are to enhance study and knowledge</p>
                   </div>
                   <div className="game-stats">
                     <div className="stat-box">
-                      <div className="stat-label">Site Integrity</div>
+                      <div className="stat-label">Site Preservation Health</div>
                       <div className="stat-value" style={{ 
                         color: siteIntegrity >= 70 ? '#4CAF50' : siteIntegrity >= 40 ? '#FFC107' : '#f44336'
                       }}>
@@ -859,11 +963,11 @@ const Game: React.FC = () => {
                       </div>
                     </div>
                     <div className="stat-box">
-                      <div className="stat-label">Progress</div>
-                      <div className="stat-value">{excavatedCount}/{totalSpots}</div>
+                      <div className="stat-label">Artifacts Excavated</div>
+                      <div className="stat-value">{excavatedCount}/{totalScenarios}</div>
                     </div>
                     <div className="stat-box">
-                      <div className="stat-label">Score</div>
+                      <div className="stat-label">Total Points</div>
                       <div className="stat-value" style={{ color: '#ffd700' }}>{score}</div>
                     </div>
                   </div>
@@ -874,65 +978,81 @@ const Game: React.FC = () => {
                 </div>
               </div>
 
-              {/* Excavation Grid */}
-              <div className="excavation-grid" style={{ gridTemplateColumns: `repeat(${gridCols}, 1fr)` }}>
-                {excavationGrid.map((excavated, index) => (
-                  <button
-                    key={index}
-                    className={`excavation-square ${excavated ? 'excavated' : ''}`}
-                    onClick={() => handleExcavate(index)}
-                    disabled={excavated}
-                  >
-                    {excavated ? '✓' : ''}
-                  </button>
-                ))}
-              </div>
-
-              {/* Challenge Modal with Education */}
-              {currentChallenge && !(currentChallenge as any).feedback && (
-                <div className="challenge-modal">
-                  <div className="challenge-content">
-                    <div className="challenge-text">{currentChallenge.description}</div>
-                    <div className="lesson-box">
-                      <strong>💡 Site Integrity Lesson:</strong>
-                      <p>{(currentChallenge as any).lesson}</p>
-                    </div>
-                    <div className="challenge-buttons">
-                      <button
-                        className="decision-btn careful"
-                        onClick={() => {
-                          handleChallengeResponse(true);
-                        }}
-                      >
-                        ⚖️ Excavate Carefully
-                      </button>
-                      <button
-                        className="decision-btn quick"
-                        onClick={() => {
-                          handleChallengeResponse(false);
-                        }}
-                      >
-                        ⚡ Excavate Quickly
-                      </button>
+              {/* Interactive Scenario Card */}
+              {currentChallenge && (
+                <div className={`scenario-card ${(currentChallenge as any).feedback ? 'revealed' : ''}`}>
+                  <div className="scenario-header">
+                    <div className="artifact-display">
+                      <div className="artifact-emoji">{currentChallenge.artifact}</div>
+                      <div className="artifact-info">
+                        <h3>{currentChallenge.name}</h3>
+                        <p className="artifact-description">{currentChallenge.description}</p>
+                      </div>
                     </div>
                   </div>
+
+                  {!(currentChallenge as any).feedback ? (
+                    <div className="scenario-choices">
+                      <div className="scenario-text">
+                        <strong>How should you excavate this artifact?</strong>
+                      </div>
+                      
+                      <button
+                        className="scenario-btn careful-btn"
+                        onClick={() => handleExcavate(true)}
+                      >
+                        <div className="btn-icon">🛡️</div>
+                        <div className="btn-title">Careful Excavation</div>
+                        <div className="btn-subtitle">Slow, documented, preserve site integrity</div>
+                        <div className="btn-result">✅ Preserves artifacts & evidence</div>
+                      </button>
+
+                      <button
+                        className="scenario-btn quick-btn"
+                        onClick={() => handleExcavate(false)}
+                      >
+                        <div className="btn-icon">⚡</div>
+                        <div className="btn-title">Speed Excavation</div>
+                        <div className="btn-subtitle">Fast, risk-taking approach</div>
+                        <div className="btn-result">⚠️ Risk damaging artifacts</div>
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="scenario-result">
+                      <div className={`result-banner ${(currentChallenge as any).isCorrect ? 'success' : 'danger'}`}>
+                        <div className="result-icon">
+                          {(currentChallenge as any).isCorrect ? '✅' : '❌'}
+                        </div>
+                        <div className="result-text">
+                          {(currentChallenge as any).feedback}
+                        </div>
+                        <div className="result-score">
+                          {(currentChallenge as any).integrityChange > 0 ? '+' : ''}{(currentChallenge as any).integrityChange} Site Integrity
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
-              {/* Challenge Feedback Message */}
-              {currentChallenge && (currentChallenge as any).feedback && (
-                <div className={`challenge-result ${(currentChallenge as any).isCorrect ? 'correct' : 'incorrect'}`}>
-                  <div className="feedback-header">
-                    {(currentChallenge as any).isCorrect ? '✓ Correct!' : '✗ Incorrect'}
-                  </div>
+              {/* Level Complete */}
+              {excavatedCount >= excavationScenarios.length && (
+                <div className="challenge-result correct">
+                  <div className="feedback-header">🎉 Level Complete!</div>
                   <div className="feedback-message">
-                    {(currentChallenge as any).feedback}
+                    You've completed all excavation scenarios. Your site integrity is {Math.round(siteIntegrity)}%!
                   </div>
                   <button 
                     className="continue-btn"
-                    onClick={() => setCurrentChallenge(null)}
+                    onClick={() => {
+                      if (currentLevel < 3) {
+                        initializeLevel(currentLevel + 1);
+                      } else {
+                        setGameState('finished');
+                      }
+                    }}
                   >
-                    Continue Excavating
+                    {currentLevel < 3 ? `Continue to Level ${currentLevel + 1} →` : '🏆 View Leaderboard'}
                   </button>
                 </div>
               )}
@@ -1178,29 +1298,58 @@ const Game: React.FC = () => {
 
                   <div className="final-stats">
                     <div className="final-score">
-                      <div className="score-label">Final Score</div>
+                      <div className="score-label">Phase 2 Score</div>
                       <div className="score-value">{score}</div>
                     </div>
                     <div className="achievement-message">
                       You used {moves} moves but the limit was {currentMoveLimit}. Try to match pairs more carefully and use fewer moves!
                     </div>
+                    <div className="combined-score-breakdown">
+                      <h4>📊 Your Combined Score</h4>
+                      <div className="score-row">
+                        <span className="score-item-label">Phase 1 (Site Integrity):</span>
+                        <span className="score-item-value">{gameScores.siteIntegrity}</span>
+                      </div>
+                      <div className="score-row">
+                        <span className="score-item-label">Phase 2 (Memory Match):</span>
+                        <span className="score-item-value">{score}</span>
+                      </div>
+                      <div className="score-row">
+                        <span className="score-item-label">Site Integrity Bonus (% × 50):</span>
+                        <span className="score-item-value">+{Math.round((siteIntegrity / 100) * 50)}</span>
+                      </div>
+                      <div className="score-row total">
+                        <span className="score-item-label"><strong>Total Combined Score:</strong></span>
+                        <span className="score-item-value total-value"><strong>{score + gameScores.siteIntegrity + Math.round((siteIntegrity / 100) * 50)}</strong></span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="action-buttons final">
-                    <button className="play-again-btn" onClick={() => {
-                      setGameState('levelSelect');
-                      setScore(0);
-                      setMoves(0);
-                    }}>
-                      🔄 Try Again
-                    </button>
-                    <button className="dashboard-btn" onClick={() => {
-                      updateUserScore(score);
-                      navigate('/leaderboard');
-                    }}>
-                      📊 View Leaderboard
-                    </button>
-                  </div>
+                <div className="action-buttons final">
+                  <button className="play-again-btn" onClick={() => {
+                    setGameState('levelSelect');
+                    setScore(0);
+                    setMoves(0);
+                  }}>
+                    🔄 Try Again
+                  </button>
+                  <button className="dashboard-btn" onClick={() => {
+                    // Save memory game score and calculate combined score with site integrity bonus
+                    const memoryGameScore = score;
+                    const newGameScores = { ...gameScores, memory: memoryGameScore };
+                    setGameScores(newGameScores);
+                    
+                    // Calculate combined score: Memory + SiteIntegrity + (SiteIntegrity% × 50)
+                    const integrityBonus = Math.round((siteIntegrity / 100) * 50);
+                    const combinedScore = memoryGameScore + newGameScores.siteIntegrity + integrityBonus;
+                    
+                    updateUserScore(combinedScore);
+                    addScoreToLeaderboard(user?.displayName || 'Anonymous', combinedScore);
+                    navigate('/leaderboard');
+                  }}>
+                    📊 View Leaderboard
+                  </button>
+                </div>
               </>
             ) : (
               // Game Won
@@ -1213,11 +1362,30 @@ const Game: React.FC = () => {
 
                 <div className="final-stats">
                   <div className="final-score">
-                    <div className="score-label">Final Score</div>
+                    <div className="score-label">Phase 2 Score</div>
                     <div className="score-value">{score}</div>
                   </div>
                   <div className="achievement-message">
                     🏆 Congratulations! You've matched all artifacts and learned incredible facts about ancient civilizations!
+                  </div>
+                  <div className="combined-score-breakdown">
+                    <h4>📊 Your Combined Score</h4>
+                    <div className="score-row">
+                      <span className="score-item-label">Phase 1 (Site Integrity):</span>
+                      <span className="score-item-value">{gameScores.siteIntegrity}</span>
+                    </div>
+                    <div className="score-row">
+                      <span className="score-item-label">Phase 2 (Memory Match):</span>
+                      <span className="score-item-value">{score}</span>
+                    </div>
+                    <div className="score-row">
+                      <span className="score-item-label">Site Integrity Bonus (% × 50):</span>
+                      <span className="score-item-value">+{Math.round((siteIntegrity / 100) * 50)}</span>
+                    </div>
+                    <div className="score-row total">
+                      <span className="score-item-label"><strong>Total Combined Score:</strong></span>
+                      <span className="score-item-value total-value"><strong>{score + gameScores.siteIntegrity + Math.round((siteIntegrity / 100) * 50)}</strong></span>
+                    </div>
                   </div>
                 </div>
 
@@ -1230,11 +1398,20 @@ const Game: React.FC = () => {
                     🔄 Play Again
                   </button>
                   <button className="dashboard-btn" onClick={() => {
-                    updateUserScore(score);
-                    addScoreToLeaderboard(user?.displayName || 'Anonymous', score);
+                    // Save memory game score and calculate combined score with site integrity bonus
+                    const memoryGameScore = score;
+                    const newGameScores = { ...gameScores, memory: memoryGameScore };
+                    setGameScores(newGameScores);
+                    
+                    // Calculate combined score: Memory + SiteIntegrity + (SiteIntegrity% × 50)
+                    const integrityBonus = Math.round((siteIntegrity / 100) * 50);
+                    const combinedScore = memoryGameScore + newGameScores.siteIntegrity + integrityBonus;
+                    
+                    updateUserScore(combinedScore);
+                    addScoreToLeaderboard(user?.displayName || 'Anonymous', combinedScore);
                     navigate('/leaderboard');
                   }}>
-                    📊 View Leaderboard
+                    🏆 View Final Leaderboard
                   </button>
                 </div>
               </>
@@ -1268,7 +1445,7 @@ const Game: React.FC = () => {
 
               <div className="final-stats">
                 <div className="final-score">
-                  <div className="score-label">Final Score</div>
+                  <div className="score-label">Phase 1 Score</div>
                   <div className="score-value">{score}</div>
                 </div>
                 <div className="achievement-message">
@@ -1276,6 +1453,13 @@ const Game: React.FC = () => {
                 </div>
                 <div className="achievement-detail">
                   Site Integrity Maintained: {Math.round(siteIntegrity)}% | Excavations Completed: {excavatedCount}
+                </div>
+                <div className="bonus-preview">
+                  <div className="bonus-item">
+                    <span className="bonus-label">Site Integrity Bonus (% × 50):</span>
+                    <span className="bonus-value">+{Math.round((siteIntegrity / 100) * 50)} pts</span>
+                  </div>
+                  <div className="bonus-note">💡 Complete Phase 2 to see your combined score!</div>
                 </div>
               </div>
 
@@ -1287,11 +1471,18 @@ const Game: React.FC = () => {
                   🔄 Play Again
                 </button>
                 <button className="dashboard-btn" onClick={() => {
-                  updateUserScore(score);
-                  addScoreToLeaderboard(user?.displayName || 'Anonymous', score);
-                  navigate('/leaderboard');
+                  // Save site integrity game score and progress to Memory Match
+                  const siteIntegrityScore = score;
+                  const newGameScores = { ...gameScores, siteIntegrity: siteIntegrityScore };
+                  setGameScores(newGameScores);
+                  
+                  // Auto-transition to Memory Match game
+                  setSelectedGame('memory');
+                  setGameState('levelSelect');
+                  setScore(0);
+                  setCurrentLevel(0);
                 }}>
-                  📊 View Leaderboard
+                  ➜ Proceed to Memory Match Game
                 </button>
               </div>
             </div>

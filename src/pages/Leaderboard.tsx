@@ -68,11 +68,12 @@ const Leaderboard: React.FC = () => {
         </div>
 
         <div className="stats-info">
-          <h3>📊 How Scoring Works</h3>
+          <h3>📊 How Combined Scoring Works</h3>
           <ul>
-            <li><strong>Memory Match:</strong> Correctly match artifact pairs to earn points</li>
-            <li><strong>Scoring Formula:</strong> Base artifact points × Level multiplier (Level 1×1, Level 2×2, Level 3×3)</li>
-            <li><strong>Rarity Bonus:</strong> Rare and legendary artifacts are worth more points than common ones</li>
+            <li><strong>Phase 1 - Site Integrity Challenge:</strong> Earn points for correct excavation decisions across 3 levels</li>
+            <li><strong>Phase 2 - Artifact Memory Challenge:</strong> Earn points by efficiently matching artifact pairs with fewer moves</li>
+            <li><strong>Site Integrity Bonus:</strong> Extra points based on site preservation quality (Site Integrity % × 50 points)</li>
+            <li><strong>Final Score:</strong> Phase 1 Score + Phase 2 Score + Site Integrity Bonus = Your Combined Leaderboard Ranking</li>
           </ul>
         </div>
       </div>

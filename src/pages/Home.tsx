@@ -72,9 +72,12 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      <div className="features-section">
+      <div className="section-header">
         <h2>What You'll Experience</h2>
         <p className="features-subtitle">Explore interactive features and engaging content designed for archaeology enthusiasts</p>
+      </div>
+
+      <div className="features-section">
         <div className="features-tabs">
           <div className="tab-buttons">
             {features.map((feature, index) => (

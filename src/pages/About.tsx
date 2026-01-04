@@ -28,6 +28,41 @@ const About: React.FC = () => {
         </section>
 
         <section className="about-section">
+          <h3>🌟 How Archaeology Impacts People and Society</h3>
+          <p>
+            Archaeology profoundly shapes our understanding of humanity and guides how we live today. By studying past civilizations, 
+            we learn valuable lessons about innovation, cultural diversity, environmental sustainability, and resilience. Archaeology 
+            helps preserve cultural heritage and provides communities with a deeper sense of identity and pride in their ancestral roots.
+          </p>
+          <div className="impact-highlights">
+            <div className="impact-item">
+              <h4>🧠 Understanding Human History</h4>
+              <p>Archaeology reveals how societies evolved, adapted to challenges, and developed complex civilizations—helping us understand where we come from.</p>
+            </div>
+            <div className="impact-item">
+              <h4>🌱 Environmental Lessons</h4>
+              <p>Past societies' agricultural practices, resource management, and responses to climate change provide insights for sustainable living today.</p>
+            </div>
+            <div className="impact-item">
+              <h4>🤝 Cultural Connection</h4>
+              <p>Archaeology helps indigenous and local communities reconnect with their heritage, strengthening cultural identity and community bonds.</p>
+            </div>
+            <div className="impact-item">
+              <h4>🔬 Scientific Innovation</h4>
+              <p>Archaeological discoveries inspire technological advancements and influence modern engineering, medicine, and scientific research.</p>
+            </div>
+            <div className="impact-item">
+              <h4>📚 Education & Awareness</h4>
+              <p>Archaeological findings teach us about human diversity, peaceful cooperation, trade networks, and the universal human desire to understand our world.</p>
+            </div>
+            <div className="impact-item">
+              <h4>🌍 Global Cooperation</h4>
+              <p>International archaeological projects promote collaboration between nations, fostering peace and mutual understanding across cultures.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="about-section">
           <h3>🔍 The Archaeological Process</h3>
           <ol>
             <li><strong>Survey:</strong> Identify and map potential archaeological sites</li>

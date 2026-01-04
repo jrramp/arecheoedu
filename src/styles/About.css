@@ -88,6 +88,35 @@
   line-height: 1.6;
 }
 
+.impact-highlights {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.impact-item {
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid #4CAF50;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.impact-item h4 {
+  color: #2e7d32;
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.impact-item p {
+  color: #333;
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.6;
+}
+
 /* Features Section */
 .features-section {
   display: grid;
