@@ -61,7 +61,7 @@ src/
 
 1. **Clone or navigate to the project:**
    ```bash
-   cd c:\workspaces\arecheoedu
+   cd c:\workspaces\archaeologyedu
    ```
 
 2. **Install dependencies:**

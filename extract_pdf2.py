@@ -2,7 +2,7 @@ import pdfplumber
 from PIL import Image
 import io
 
-pdf_path = r"c:\workspaces\arecheoedu\Relics Reimagined - Geology - Google Slides.pdf"
+pdf_path = r"c:\workspaces\archaeologyedu\Relics Reimagined - Geology - Google Slides.pdf"
 
 # Try to extract images and text from PDF
 with pdfplumber.open(pdf_path) as pdf:

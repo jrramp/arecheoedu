@@ -1,6 +1,6 @@
 import pdfplumber
 
-pdf_path = r"c:\workspaces\arecheoedu\Relics Reimagined - Geology - Google Slides.pdf"
+pdf_path = r"c:\workspaces\archaeologyedu\Relics Reimagined - Geology - Google Slides.pdf"
 
 with pdfplumber.open(pdf_path) as pdf:
     print(f"Total pages: {len(pdf.pages)}\n")

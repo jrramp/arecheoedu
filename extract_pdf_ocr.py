@@ -3,7 +3,7 @@ import pytesseract
 from PIL import Image
 import os
 
-pdf_path = r"c:\workspaces\arecheoedu\Relics Reimagined - Geology - Google Slides.pdf"
+pdf_path = r"c:\workspaces\archaeologyedu\Relics Reimagined - Geology - Google Slides.pdf"
 
 try:
     # Convert PDF to images

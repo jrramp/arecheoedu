@@ -12,7 +12,7 @@ export interface ActivityLog {
   time: string;
 }
 
-const STORAGE_KEY = 'arecheoedu_activity_logs';
+const STORAGE_KEY = 'archaeologyedu_activity_logs';
 
 /**
  * Log user activity (presentation entry or quiz start)

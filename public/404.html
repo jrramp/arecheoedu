@@ -8,20 +8,20 @@
       var pathname = window.location.pathname;
       var search = window.location.search;
       
-      // Remove /arecheoedu prefix to get the route
-      var route = pathname.replace(/^\/arecheoedu\/?/, '') || '';
+      // Remove /archaeologyedu prefix to get the route
+      var route = pathname.replace(/^\/archaeologyedu\/?/, '') || '';
       
       // Don't redirect static assets or index.html
       if (pathname.match(/\.(html|css|js|json|png|jpg|gif|svg|ico|woff|woff2|ttf)$/) ||
           pathname.endsWith('index.html') ||
-          pathname === '/arecheoedu/' ||
-          pathname === '/arecheoedu' ||
+          pathname === '/archaeologyedu/' ||
+          pathname === '/archaeologyedu' ||
           route === '' ||
           pathname.includes('/assets/')) {
         // Let the server handle static files
       } else {
         // Redirect to index.html with hash routing
-        window.location.href = '/arecheoedu/#/' + route + search;
+        window.location.href = '/archaeologyedu/#/' + route + search;
       }
     </script>
   </head>

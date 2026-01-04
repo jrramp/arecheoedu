@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 // All user registration data is stored in localStorage instead of Firebase
 
 // Storage key for user database
-const USER_DATABASE_KEY = 'arecheoedu_user_database';
+const USER_DATABASE_KEY = 'archaeologyedu_user_database';
 
 // User registration data structure
 interface UserRegistration {
