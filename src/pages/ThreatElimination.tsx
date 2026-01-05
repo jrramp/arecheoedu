@@ -55,7 +55,7 @@ const ThreatElimination: React.FC<ThreatEliminationProps> = ({ onScoreSubmit }) 
       id: 1,
       name: 'Desert Ruins',
       emoji: '🏜️',
-      image: 'url("/desert-ruins.jpg")',
+      image: 'url("/archaeologyedu/desert-ruins.jpg")',
       threatCount: 5,
       timeLimit: 45,
       description: 'Protect ancient desert structures from erosion and looting'
@@ -74,7 +74,7 @@ const ThreatElimination: React.FC<ThreatEliminationProps> = ({ onScoreSubmit }) 
       id: 3,
       name: 'Coastal Cave',
       emoji: '🏖️',
-      image: 'url("/coastal-cave.jpg")',
+      image: 'url("/archaeologyedu/coastal-cave.jpg")',
       threatCount: 9,
       timeLimit: 55,
       description: 'Defend coastal caves from erosion and pollution'
