@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/ThreatElimination.css';
-import desertRuinsImg from '/desert-ruins.jpg';
-import jungleTempleImg from '/jungle-temple.jpg';
-import coastalCaveImg from '/coastal-cave.jpg';
 
 interface Threat {
   id: number;
@@ -58,7 +55,7 @@ const ThreatElimination: React.FC<ThreatEliminationProps> = ({ onScoreSubmit }) 
       id: 1,
       name: 'Desert Ruins',
       emoji: '🏜️',
-      image: `url(${desertRuinsImg})`,
+      image: 'url("/desert-ruins.jpg")',
       threatCount: 5,
       timeLimit: 45,
       description: 'Protect ancient desert structures from erosion and looting'
@@ -68,7 +65,7 @@ const ThreatElimination: React.FC<ThreatEliminationProps> = ({ onScoreSubmit }) 
       id: 2,
       name: 'Jungle Temple',
       emoji: '🌴',
-      image: `url(${jungleTempleImg})`,
+      image: 'url("/archaeologyedu/jungle-temple.jpg")',
       threatCount: 7,
       timeLimit: 50,
       description: 'Stop threats from damaging hidden jungle archaeological sites'
@@ -77,7 +74,7 @@ const ThreatElimination: React.FC<ThreatEliminationProps> = ({ onScoreSubmit }) 
       id: 3,
       name: 'Coastal Cave',
       emoji: '🏖️',
-      image: `url(${coastalCaveImg})`,
+      image: 'url("/coastal-cave.jpg")',
       threatCount: 9,
       timeLimit: 55,
       description: 'Defend coastal caves from erosion and pollution'
