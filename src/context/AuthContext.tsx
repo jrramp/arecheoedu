@@ -35,13 +35,27 @@ const initializeUserDatabase = () => {
     console.error('Error loading user database:', error);
   }
 
-  // Default database with test admin user
+  // Default database with test admin user and instructor accounts
   const defaultDatabase: { [email: string]: UserRegistration } = {
     'cyber@example.com': {
       email: 'cyber@example.com',
       password: 'turtle2025',
       displayName: 'Cyber Archaeologist',
       role: 'admin',
+      createdAt: new Date().toISOString()
+    },
+    'instructor1@relicsreimagined.com': {
+      email: 'instructor1@relicsreimagined.com',
+      password: 'SiteIntegrity',
+      displayName: 'Instructor One',
+      role: 'customer',
+      createdAt: new Date().toISOString()
+    },
+    'instructor2@relicsreimagined.com': {
+      email: 'instructor2@relicsreimagined.com',
+      password: 'SiteIntegrity',
+      displayName: 'Instructor Two',
+      role: 'customer',
       createdAt: new Date().toISOString()
     }
   };
