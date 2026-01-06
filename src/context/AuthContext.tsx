@@ -26,17 +26,7 @@ interface MockUser {
 
 // Initialize user database from localStorage
 const initializeUserDatabase = () => {
-  try {
-    const existing = localStorage.getItem(USER_DATABASE_KEY);
-    if (existing) {
-      return JSON.parse(existing);
-    }
-  } catch (error) {
-    console.error('Error loading user database:', error);
-  }
-
-  // Default database with test admin user and instructor accounts
-  const defaultDatabase: { [email: string]: UserRegistration } = {
+  const defaultAccounts: { [email: string]: UserRegistration } = {
     'cyber@example.com': {
       email: 'cyber@example.com',
       password: 'turtle2025',
@@ -60,9 +50,22 @@ const initializeUserDatabase = () => {
     }
   };
 
+  try {
+    const existing = localStorage.getItem(USER_DATABASE_KEY);
+    if (existing) {
+      const existingData = JSON.parse(existing);
+      // Merge default accounts with existing data, preserving existing accounts
+      const mergedDatabase = { ...defaultAccounts, ...existingData };
+      localStorage.setItem(USER_DATABASE_KEY, JSON.stringify(mergedDatabase));
+      return mergedDatabase;
+    }
+  } catch (error) {
+    console.error('Error loading user database:', error);
+  }
+
   // Save default database to localStorage
-  localStorage.setItem(USER_DATABASE_KEY, JSON.stringify(defaultDatabase));
-  return defaultDatabase;
+  localStorage.setItem(USER_DATABASE_KEY, JSON.stringify(defaultAccounts));
+  return defaultAccounts;
 };
 
 // In-memory cache of user database
